@@ -40,24 +40,36 @@
         #topbar {
             position: absolute;
             width: 100vw;
-
         }
     </style>
 </head>
 <body>
     <div id="container">
-        <div id="topbar">
+        <div id="topbar" style="display: none;">
             <button>Topbar</button>
             <input type="text"></input>
         </div>
+        <div id="catcher" style="position: absolute; top: 0; left: 0; width: 100vw; height: calc(100vh/16); z-index: 9999;"></div>
         <div id="webviews">
             <webview src="https://www.google.com/" nodeintegration></webview>
         </div>
     </div>
 </body>
 <script>
-    window.addEventListener("mousemove", (event) => {
-        
+    const catcher = document.getElementById("catcher")
+    catcher.addEventListener("mousemove", (event) => {
+        document.getElementById("topbar").style.display = "block";
+        catcher.style.pointerEvents = "none";
     })
+    catcher.addEventListener("mouseleave", (event) => {
+        document.getElementById("topbar").style.display = "none";
+        catcher.style.pointerEvents = "auto";
+    })
+    /*        const checkTop16 = event.clientY <= window.innerHeight / 16;
+        if (checkTop16) {
+            document.getElementById("topbar").style.display = "block";
+        } else {
+            document.getElementById("topbar").style.display = "none";
+        }*/
 </script>
 </html>
