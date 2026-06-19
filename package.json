@@ -1,0 +1,24 @@
+{
+  "name": "revobrowser",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/solarcosmic/RevoBrowser#readme",
+  "bugs": {
+    "url": "https://github.com/solarcosmic/RevoBrowser/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/solarcosmic/RevoBrowser.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "electron": "^42.4.1"
+  }
+}
