@@ -93,6 +93,14 @@
             z-index: 998;
         }
 
+        #new-tab-button {
+            margin-top: auto;
+        }
+
+        #newtab-img {
+            filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
+        }
+
         /*#topbar, #appbar {
             pointer-events: none;
         }
@@ -112,7 +120,9 @@
             <div>
                 <div id="url-text-drawer">App Drawer</div>
                 <div id="tabs">
-                    
+                    <button id="new-tab-button">
+                        <img id="newtab-img" src="assets/plus-solid-full.svg" style="width: 32px; height: 32px;">
+                    </button>
                 </div>
             </div>
         </div>
