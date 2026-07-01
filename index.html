@@ -64,26 +64,43 @@
             position: absolute;
             width: 100vw;
             bottom: 0;
-            z-index: 999;
+            z-index: 1000;
             display: flex;
             justify-content: center;
+            pointer-events: none;
         }
-        #appbar div {
+        #appbar > div {
+            pointer-events: auto;
             background-color: rgba(0, 0, 0, 0.5);
             padding: 4px 4px;
             color: #ffffff;
             width: 500px;
             border-radius: 8px;
         }
+        #appbar button {
+            pointer-events: auto;
+            width: 64px;
+            height: 64px;
+            background-color: #0000008e;
+            border-radius: 8px;
+        }
+        #lowcatcher {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100vw;
+            height: calc(100vh / 16);
+            z-index: 998;
+        }
 
-        #topbar, #appbar {
-    pointer-events: none;
-}
+        /*#topbar, #appbar {
+            pointer-events: none;
+        }
 
-#topbar *,
-#appbar * {
-    pointer-events: auto;
-}
+        #topbar *,
+        #appbar * {
+            pointer-events: auto;
+        }*/
     </style>
 </head>
 <body>
@@ -100,7 +117,7 @@
             </div>
         </div>
         <div id="catcher" style="position: absolute; top: 0; left: 0; width: 100vw; height: calc(100vh/16); z-index: 9999;"></div>
-        <div id="lowcatcher" style="position: absolute; bottom: 0; left: 0; width: 100vw; height: calc(100vh/16); z-index: 9999;"></div>
+        <div id="lowcatcher"></div>
         <div id="webviews">
 
         </div>

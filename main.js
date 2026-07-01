@@ -1,9 +1,9 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, session } = require('electron')
 
 const createWindow = () => {
   const win = new BrowserWindow({
-    width: 1280,
-    height: 720,
+    width: 1920,
+    height: 1080,
     transparent: true,
     backgroundColor: "#00000000",
     webPreferences: {
@@ -11,11 +11,15 @@ const createWindow = () => {
     }
   })
 
-  win.setMenu(null)
-  win.loadFile('index.html')
-  win.webContents.openDevTools()
+  win.setMenu(null);
+  win.loadFile('index.html');
+  win.webContents.openDevTools();
 }
 
 app.whenReady().then(() => {
-  createWindow()
-})
+  const mainSession = session.defaultSession;
+  const originalAgent = mainSession.getUserAgent();
+  const cleanAgent = originalAgent.replace(/ Electron\/[^\s]+/, '').replace(/ revobrowser\/[^\s]+/, ` Revo/${app.getVersion() || "1.0.0"}`);
+  mainSession.setUserAgent(cleanAgent);
+  createWindow();
+});
