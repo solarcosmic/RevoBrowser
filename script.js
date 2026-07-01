@@ -21,6 +21,7 @@ function createTab(url = "https://hackclub.com") {
             /* currently focused */
             console.log("focused tab - title has changed");
             document.getElementById("url-text-drawer").textContent = tab.view.getTitle();
+            document.getElementById("url-text").textContent = new URL(tab.view.getURL()).hostname;
         } else {
             console.log("not focused");
         }
