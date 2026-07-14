@@ -1,5 +1,5 @@
 const tabs = []
-const focusedTabId = 1;
+let focusedTabId = 1;
 var tabInc = 0;
 
 function createTab(url = "https://hackclub.com") {
@@ -21,12 +21,17 @@ function createTab(url = "https://hackclub.com") {
     tabs.push(tab);
     createTabButton(tabId);
     document.getElementById("webviews").appendChild(tab.view);
+    tab.view.addEventListener("dom-ready", () => {
+        tab.states.hasLoaded = true;
+        if (focusedTabId == tab.id) {
+            updateMetadata(tab);
+        }
+    });
     tab.view.addEventListener("page-title-updated", (e) => {
         if (focusedTabId == tab.id) {
             /* currently focused */
             console.log("focused tab - title has changed");
-            document.getElementById("url-text-drawer").textContent = tab.view.getTitle();
-            document.getElementById("url-text").textContent = new URL(tab.view.getURL()).hostname;
+            updateMetadata(tab);
         } else {
             console.log("not focused");
         }
@@ -62,7 +67,8 @@ function createTab(url = "https://hackclub.com") {
        // } else {
             //console.log("not focused (favicon)");
         //}
-    })
+    });
+    return tab;
 }
 
 function createTabButton(tabId, favicon) {
@@ -83,8 +89,38 @@ function createTabButton(tabId, favicon) {
     document.getElementById("tabs").appendChild(btn);
     btn.addEventListener("click", () => {
         console.log("click!");
+        focusTab(tabId);
     })
     return btn;
+}
+
+function focusTab(tabId) {
+    const tab = getTabObjectById(tabId);
+    focusedTabId = tabId;
+    hideAllTabs();
+    if (tab.states.hasLoaded) {
+        updateMetadata(tab);
+    }
+    tab.view.style.display = "flex";
+}
+
+function updateMetadata(tab) {
+    document.getElementById("url-text-drawer").textContent = tab.view.getTitle();
+    document.getElementById("url-text").textContent = new URL(tab.view.getURL()).hostname;
+}
+
+function hideAllTabs() {
+    const views = document.getElementById("webviews");
+    for (const item of views.children) {
+        item.style.display = "none";
+    }
+}
+
+function getTabObjectById(tabId) {
+    for (const item of tabs) {
+        if (item.id == tabId) return item;
+    }
+    return null;
 }
 
 let appbarHideTimer = null;
@@ -140,5 +176,7 @@ createTab("https://google.com")
 
 document.getElementById("new-tab-button").addEventListener("click", () => {
     const tab = createTab("https://google.com")
-
+    requestAnimationFrame(() => {
+        focusTab(tab.id);
+    })
 })
