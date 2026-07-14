@@ -1,5 +1,5 @@
 const tabs = []
-let focusedTabId = 1;
+var focusedTabId = 1;
 var tabInc = 0;
 
 function createTab(url = "https://hackclub.com") {
@@ -21,12 +21,6 @@ function createTab(url = "https://hackclub.com") {
     tabs.push(tab);
     createTabButton(tabId);
     document.getElementById("webviews").appendChild(tab.view);
-    tab.view.addEventListener("dom-ready", () => {
-        tab.states.hasLoaded = true;
-        if (focusedTabId == tab.id) {
-            updateMetadata(tab);
-        }
-    });
     tab.view.addEventListener("page-title-updated", (e) => {
         if (focusedTabId == tab.id) {
             /* currently focused */
@@ -35,6 +29,10 @@ function createTab(url = "https://hackclub.com") {
         } else {
             console.log("not focused");
         }
+    });
+    tab.view.addEventListener("dom-ready", (e) => {
+        tab.states.hasLoaded = true;
+        if (focusedTabId == tab.id) updateMetadata(tab);
     })
     tab.view.addEventListener("page-favicon-updated", (e) => {
         //if (focusedTabId == tab.id) {
@@ -96,11 +94,9 @@ function createTabButton(tabId, favicon) {
 
 function focusTab(tabId) {
     const tab = getTabObjectById(tabId);
-    focusedTabId = tabId;
+    focusedTabId = tab.id;
     hideAllTabs();
-    if (tab.states.hasLoaded) {
-        updateMetadata(tab);
-    }
+    if (tab.states.hasLoaded) updateMetadata(tab);
     tab.view.style.display = "flex";
 }
 
