@@ -1,7 +1,13 @@
-const { app, BrowserWindow, session } = require('electron');
-const contextMenu = require('electron-context-menu').default;
-const { download } = require('electron-dl');
-const path = require("node:path");
+import { app, BrowserWindow, session } from 'electron';
+import contextMenu from 'electron-context-menu';
+import download from 'electron-dl';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
+
+// prefaces for es6
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 var win;
 
@@ -18,7 +24,7 @@ const createWindow = () => {
   })
 
   win.setMenu(null);
-  win.loadFile('index.html');
+  win.loadFile('src/index.html');
   win.webContents.openDevTools();
 }
 

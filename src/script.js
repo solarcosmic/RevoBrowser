@@ -1,87 +1,9 @@
-const tabs = []
 var focusedTabId = 1;
 var tabInc = 0;
+import { utils, tabs } from "library/packman";
+utils.testing();
 
-function createTab(url = "https://hackclub.com") {
-    /* Tab object */
-    const tabId = tabInc + 1;
-    const tab = {
-        id: tabId,
-        view: document.createElement("webview"),
-        states: {
-            isLoading: false,
-            hasLoaded: false,
-            pinned: false,
-            faviconLoaded: false
-        }
-    }
-    tab.view.src = url;
-    tab.view.id = "tab_" + tabId;
-    tabInc = tabId;
-    tabs.push(tab);
-    createTabButton(tabId);
-    document.getElementById("webviews").appendChild(tab.view);
-    var isFaviconUpdated = false;
-    tab.view.addEventListener("page-title-updated", (e) => {
-        if (focusedTabId == tab.id) updateMetadata(tab);
-    });
-    tab.view.addEventListener("dom-ready", (e) => {
-        tab.states.hasLoaded = true;
-        if (focusedTabId == tab.id) updateMetadata(tab);
-    });
-    tab.view.addEventListener("did-start-navigation", (e) => {
-        if (e.isMainFrame) {
-            createTabButton(tab.id, "assets/loading2.gif"); // does not remake button, but changes favicon
-            isFaviconUpdated = false;
-        }
-    });
-    tab.view.addEventListener("did-finish-load", (e) => {
-        if (!isFaviconUpdated) {
-            // fallback
-            const googleApi = `https://www.google.com/s2/favicons?domain=${tab.view.getURL()}`;
-            createTabButton(tab.id, googleApi);
-        }
-    });
-    tab.view.addEventListener("page-favicon-updated", (e) => {
-        //if (focusedTabId == tab.id) {
-            /* currently focused */
-            console.log("focused tab - favicon has changed");
-            if (isFaviconUpdated) {
-                console.log("tab already has favicon, returning");
-                return;
-            }
-            const favicon = e.favicons[0];
-            if (favicon) {
-                console.log("create button: favicon thing " + favicon);
-                createTabButton(tabId, favicon);
-                isFaviconUpdated = true;
-                //<img id="url-fav-drawer" style="width: 32px; height: 32px;"></img>
-                /*if (!document.getElementById("favbtn-tabid-" + tab.id)) {
-                    /*const btn = document.createElement("button");
-                    const favimg = document.createElement("img");
-                    favimg.id = "favimg-tabid-" + tabId;
-                    favimg.style.width = "32px";
-                    favimg.style.height = "32px";
-                    favimg.src = favicon;
-                    btn.appendChild(favimg);
-                    btn.id = "favbtn-tabid-" + tab.id;
-                    document.getElementById("tabs").appendChild(btn);
-                    btn.addEventListener("click", () => {
-                        console.log("click!");
-                    })
-                   console.log("Create button init")
-                } else {
-                    document.getElementById("favimg-tabid-" + tab.id).src = favicon;
-                }*/
-            }
-            //document.getElementById("url-fav-drawer").src = tab.view.getTitle();
-       // } else {
-            //console.log("not focused (favicon)");
-        //}
-    });
-    focusTab(tab.id);
-    return tab;
-}
+
 
 function createTabButton(tabId, favicon) {
     if (document.getElementById("favbtn-tabid-" + tabId)) {
@@ -180,12 +102,12 @@ appbar.addEventListener("mouseleave", delayAppbar);
             document.getElementById("topbar").style.display = "none";
         }*/
 
-createTab("https://google.com")
+tabs.createTab("https://google.com")
 
 
 
 document.getElementById("new-tab-button").addEventListener("click", () => {
-    const tab = createTab("https://google.com")
+    const tab = tabs.createTab("https://google.com")
     requestAnimationFrame(() => {
         focusTab(tab.id);
     })
@@ -201,5 +123,5 @@ function truncateString(str, num) {
 }
 
 window.revoAPI.openNewTab((url) => {
-    createTab(url || "https://google.com");
+    tabs.createTab(url || "https://google.com");
 })

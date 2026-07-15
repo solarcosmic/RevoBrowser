@@ -7,7 +7,7 @@
     <style>
         @font-face {
             font-family: 'Golos Text';
-            src: url("assets/GolosText-VariableFont_wght.ttf");
+            src: url("../assets/GolosText-VariableFont_wght.ttf");
         }
         html, body {
             margin: 0;
@@ -134,7 +134,7 @@
                 <div id="url-text-drawer">App Drawer</div>
                 <div id="tabs">
                     <button id="new-tab-button">
-                        <img id="newtab-img" src="assets/plus-solid-full.svg" style="width: 32px; height: 32px;">
+                        <img id="newtab-img" src="../assets/plus-solid-full.svg" style="width: 32px; height: 32px;">
                     </button>
                 </div>
             </div>
@@ -146,5 +146,12 @@
         </div>
     </div>
 </body>
-<script src="script.js"></script>
+<script type="importmap">
+    {
+        "imports": {
+            "library/packman": "./library/packman.js"
+        }
+    }
+</script>
+<script type="module" src="script.js"></script>
 </html>
