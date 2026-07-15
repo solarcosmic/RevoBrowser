@@ -1,7 +1,17 @@
+/*
+ * Revo Browser
+ * Copyright (c) 2026 solarcosmic
+ * 
+ * This browser is free of use but may contain a license, check the repository for details.
+*/
+
+import { utils } from "library/packman";
 
 export var tabs = []; // Where all the tab objects are stored
+var focusedTabId;
 
 const views = document.getElementById("webviews");
+const tabButtons = document.getElementById("tabs");
 
 /*
  * Creates a tab, opening a URL; namely its object and the WebView itself.
@@ -38,12 +48,42 @@ export function createTab(url = "https://hackclub.com", focus = true) {
     tab.view.setAttribute("id", tabIdString); // Updates the DOM ID so we can reference it in the future
 
     tabs.push(tab); // Pushes the tab object to the tabs array
-    createTabButton(tabId); // Creates a tab button that appears in the app drawer
+    createTabButton(tab); // Creates a tab button that appears in the app drawer
     views.appendChild(tab.view); // Adds the WebView object to the DOM
 
     registerTabListeners(tab); // Registers all relevant events (e.g. favicon changes)
     if (focus) focusTab(tab); // Sets the newly created tab to be the one in focus
     return tab;
+}
+
+export function createTabButton(tab, favicon) {
+    const tabId = tab.id;
+    if (!tabId) { throw Error("No tab ID found!"); return; }
+    const buttonId = "favbtn-tabid-" + tabId;
+    const imageId = "favimg-tabid-" + tabId;
+    const relevantButton = document.getElementById(buttonId);
+
+    if (relevantButton) {
+        const faviconImage = document.getElementById(imageId);
+        if (favicon) faviconImage.src = favicon;
+        console.log("Favicon trigger: " + favicon);
+        return relevantButton;
+    }
+
+    const button = document.createElement("button");
+    const faviconImage = document.createElement("img");
+    faviconImage.setAttribute("id", imageId);
+    faviconImage.style.width = "32px";
+    faviconImage.style.height = "32px";
+    faviconImage.src = favicon || "";
+    button.appendChild(faviconImage);
+    button.setAttribute("id", buttonId);
+    tabButtons.appendChild(button);
+    button.addEventListener("click", () => {
+        console.log("click!");
+        focusTab(tabId);
+    })
+    return button;
 }
 
 /*
@@ -53,22 +93,22 @@ export function createTab(url = "https://hackclub.com", focus = true) {
 export function registerTabListeners(tab) {
     var isFaviconUpdated = false;
     tab.view.addEventListener("page-title-updated", (e) => {
-        if (focusedTabId == tab.id) updateMetadata(tab); // Updates titles IF the focused tab is the tab itself
+        if (focusedTabId == tab.id) utils.updateMetadata(tab); // Updates titles IF the focused tab is the tab itself
     });
     tab.view.addEventListener("dom-ready", (e) => {
         tab.states.hasLoaded = true;
-        if (focusedTabId == tab.id) updateMetadata(tab); // Updates titles IF the focused tab is the tab itself
+        if (focusedTabId == tab.id) utils.updateMetadata(tab); // Updates titles IF the focused tab is the tab itself
     });
     tab.view.addEventListener("did-start-navigation", (e) => {
         if (!e.isMainFrame) return; // prevents IFrames from triggering this event
-        createTabButton(tab.id, "../assets/loading2.gif"); // Does not remake button, but changes favicon
+        createTabButton(tab, "../assets/loading2.gif"); // Does not remake button, but changes favicon
         isFaviconUpdated = false;
     });
     tab.view.addEventListener("did-finish-load", (e) => {
         if (!isFaviconUpdated) {
             // fallback
             const googleApi = `https://www.google.com/s2/favicons?domain=${tab.view.getURL()}`;
-            createTabButton(tab.id, googleApi);
+            createTabButton(tab, googleApi);
         }
     });
     tab.view.addEventListener("page-favicon-updated", (e) => {
@@ -80,10 +120,31 @@ export function registerTabListeners(tab) {
         const favicon = e.favicons[0];
         if (favicon) {
             console.log("create button: favicon thing " + favicon);
-            createTabButton(tabId, favicon);
+            createTabButton(tab, favicon);
             isFaviconUpdated = true;
         }
     });
-    focusTab(tab.id);
+    focusTab(tab);
     return tab;
+}
+
+export function focusTab(tab) {
+    focusedTabId = tab.id;
+    hideAllTabs();
+    if (tab.states.hasLoaded) utils.updateMetadata(tab);
+    tab.view.style.display = "flex";
+}
+
+export function hideAllTabs() {
+    const views = document.getElementById("webviews");
+    for (const item of views.children) {
+        item.style.display = "none";
+    }
+}
+
+export function getTabObjectById(tabId) {
+    for (const item of tabs) {
+        if (item.id == tabId) return item;
+    }
+    return null;
 }

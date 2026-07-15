@@ -1,59 +1,14 @@
+/*
+ * Revo Browser
+ * Copyright (c) 2026 solarcosmic
+ * 
+ * This browser is free of use but may contain a license, check the repository for details.
+*/
+
 var focusedTabId = 1;
 var tabInc = 0;
 import { utils, tabs } from "library/packman";
 utils.testing();
-
-
-
-function createTabButton(tabId, favicon) {
-    if (document.getElementById("favbtn-tabid-" + tabId)) {
-        const found = document.getElementById("favimg-tabid-" + tabId);
-        if (favicon) found.src = favicon;
-        console.log("Favicon trigger: " + favicon);
-        return found;
-    }
-    const btn = document.createElement("button");
-    const favimg = document.createElement("img");
-    favimg.id = "favimg-tabid-" + tabId;
-    favimg.style.width = "32px";
-    favimg.style.height = "32px";
-    favimg.src = favicon || "";
-    btn.appendChild(favimg);
-    btn.id = "favbtn-tabid-" + tabId;
-    document.getElementById("tabs").appendChild(btn);
-    btn.addEventListener("click", () => {
-        console.log("click!");
-        focusTab(tabId);
-    })
-    return btn;
-}
-
-function focusTab(tabId) {
-    const tab = getTabObjectById(tabId);
-    focusedTabId = tab.id;
-    hideAllTabs();
-    if (tab.states.hasLoaded) updateMetadata(tab);
-    tab.view.style.display = "flex";
-}
-
-function updateMetadata(tab) {
-    document.getElementById("url-text-drawer").textContent = truncateString(tab.view.getTitle(), 75);
-    document.getElementById("url-text").textContent = truncateString(new URL(tab.view.getURL()).hostname, 75);
-}
-
-function hideAllTabs() {
-    const views = document.getElementById("webviews");
-    for (const item of views.children) {
-        item.style.display = "none";
-    }
-}
-
-function getTabObjectById(tabId) {
-    for (const item of tabs) {
-        if (item.id == tabId) return item;
-    }
-    return null;
-}
 
 let appbarHideTimer = null;
 
@@ -104,12 +59,10 @@ appbar.addEventListener("mouseleave", delayAppbar);
 
 tabs.createTab("https://google.com")
 
-
-
 document.getElementById("new-tab-button").addEventListener("click", () => {
     const tab = tabs.createTab("https://google.com")
     requestAnimationFrame(() => {
-        focusTab(tab.id);
+        tabs.focusTab(tab);
     })
 })
 
