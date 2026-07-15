@@ -21,27 +21,40 @@ function createTab(url = "https://hackclub.com") {
     tabs.push(tab);
     createTabButton(tabId);
     document.getElementById("webviews").appendChild(tab.view);
+    var isFaviconUpdated = false;
     tab.view.addEventListener("page-title-updated", (e) => {
-        if (focusedTabId == tab.id) {
-            /* currently focused */
-            console.log("focused tab - title has changed");
-            updateMetadata(tab);
-        } else {
-            console.log("not focused");
-        }
+        if (focusedTabId == tab.id) updateMetadata(tab);
     });
     tab.view.addEventListener("dom-ready", (e) => {
         tab.states.hasLoaded = true;
         if (focusedTabId == tab.id) updateMetadata(tab);
-    })
+    });
+    tab.view.addEventListener("did-start-navigation", (e) => {
+        if (e.isMainFrame) {
+            createTabButton(tab.id, "assets/loading2.gif"); // does not remake button, but changes favicon
+            isFaviconUpdated = false;
+        }
+    });
+    tab.view.addEventListener("did-finish-load", (e) => {
+        if (!isFaviconUpdated) {
+            // fallback
+            const googleApi = `https://www.google.com/s2/favicons?domain=${tab.view.getURL()}`;
+            createTabButton(tab.id, googleApi);
+        }
+    });
     tab.view.addEventListener("page-favicon-updated", (e) => {
         //if (focusedTabId == tab.id) {
             /* currently focused */
             console.log("focused tab - favicon has changed");
+            if (isFaviconUpdated) {
+                console.log("tab already has favicon, returning");
+                return;
+            }
             const favicon = e.favicons[0];
             if (favicon) {
                 console.log("create button: favicon thing " + favicon);
                 createTabButton(tabId, favicon);
+                isFaviconUpdated = true;
                 //<img id="url-fav-drawer" style="width: 32px; height: 32px;"></img>
                 /*if (!document.getElementById("favbtn-tabid-" + tab.id)) {
                     /*const btn = document.createElement("button");
@@ -101,8 +114,8 @@ function focusTab(tabId) {
 }
 
 function updateMetadata(tab) {
-    document.getElementById("url-text-drawer").textContent = tab.view.getTitle();
-    document.getElementById("url-text").textContent = new URL(tab.view.getURL()).hostname;
+    document.getElementById("url-text-drawer").textContent = truncateString(tab.view.getTitle(), 75);
+    document.getElementById("url-text").textContent = truncateString(new URL(tab.view.getURL()).hostname, 75);
 }
 
 function hideAllTabs() {
@@ -176,3 +189,12 @@ document.getElementById("new-tab-button").addEventListener("click", () => {
         focusTab(tab.id);
     })
 })
+
+/* https://stackoverflow.com/a/53637828 */
+function truncateString(str, num) {
+    if (str.length > num) {
+        return str.slice(0, num) + "...";
+    } else {
+        return str;
+    }
+}
