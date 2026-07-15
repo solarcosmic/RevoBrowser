@@ -1,6 +1,7 @@
 const { app, BrowserWindow, session } = require('electron');
 const contextMenu = require('electron-context-menu').default;
-const { download } = require('electron-dl').default;
+const { download } = require('electron-dl');
+const path = require("node:path");
 
 var win;
 
@@ -11,7 +12,8 @@ const createWindow = () => {
     transparent: false,
     backgroundColor: "#00000000",
     webPreferences: {
-        webviewTag: true
+        webviewTag: true,
+        preload: path.join(__dirname, 'preload.js')
     }
   })
 
@@ -27,16 +29,23 @@ app.on("web-contents-created", (evt, contents) => {
       browserWindow: BrowserWindow.fromWebContents(contents),
       showInspectElement: true,
       //showSaveImageAs: true,
-      showSearchWithGoogle: true,
       showCopyImageAddress: true,
       showCopyVideoAddress: true,
       prepend: (defaultActions, params, browseWindow) => [
         {
           label: "Save Image to Desktop",
           visible: params.mediaType == 'image',
-          click: () => {
+          click: async () => {
             console.log(params.srcURL);
-            download(win || BrowserWindow.getFocusedWindow(), params.srcURL);
+            console.log("downloading!");
+            await download(win || BrowserWindow.getFocusedWindow(), params.srcURL);
+          }
+        },
+        {
+          label: `Search Google for ${truncateString(params.selectionText || "this selection", 24)}`,
+          visible: params.selectionText.trim().length > 0,
+          click: () => {
+            win.webContents.send("open-new-tab", `https://www.google.com/search?q=${encodeURIComponent(params.selectionText)}`);
           }
         }
       ]
@@ -52,3 +61,12 @@ app.whenReady().then(() => {
   mainSession.setUserAgent(revoPatch);
   createWindow();
 });
+
+/* https://stackoverflow.com/a/53637828 */
+function truncateString(str, num) {
+    if (str.length > num) {
+        return str.slice(0, num) + "...";
+    } else {
+        return str;
+    }
+}

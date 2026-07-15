@@ -79,6 +79,7 @@ function createTab(url = "https://hackclub.com") {
             //console.log("not focused (favicon)");
         //}
     });
+    focusTab(tab.id);
     return tab;
 }
 
@@ -198,3 +199,7 @@ function truncateString(str, num) {
         return str;
     }
 }
+
+window.revoAPI.openNewTab((url) => {
+    createTab(url || "https://google.com");
+})
