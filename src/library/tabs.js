@@ -56,9 +56,14 @@ export function createTab(url = "https://hackclub.com", focus = true) {
     return tab;
 }
 
+/*
+ * Creates a tab button in the App Drawer.
+ * Also serves as a function that updates the favicon of an existing tab button via tab object.
+*/
 export function createTabButton(tab, favicon) {
     const tabId = tab.id;
     if (!tabId) { throw Error("No tab ID found!"); return; }
+
     const buttonId = "favbtn-tabid-" + tabId;
     const imageId = "favimg-tabid-" + tabId;
     const relevantButton = document.getElementById(buttonId);
@@ -72,16 +77,18 @@ export function createTabButton(tab, favicon) {
 
     const button = document.createElement("button");
     const faviconImage = document.createElement("img");
+
     faviconImage.setAttribute("id", imageId);
     faviconImage.style.width = "32px";
     faviconImage.style.height = "32px";
     faviconImage.src = favicon || "";
+
     button.appendChild(faviconImage);
     button.setAttribute("id", buttonId);
     tabButtons.appendChild(button);
+
     button.addEventListener("click", () => {
-        console.log("click!");
-        focusTab(tabId);
+        focusTab(tab);
     })
     return button;
 }
@@ -92,42 +99,45 @@ export function createTabButton(tab, favicon) {
 */
 export function registerTabListeners(tab) {
     var isFaviconUpdated = false;
+    /* Page Title Updated */
     tab.view.addEventListener("page-title-updated", (e) => {
         if (focusedTabId == tab.id) utils.updateMetadata(tab); // Updates titles IF the focused tab is the tab itself
     });
+    /* DOM Ready */
     tab.view.addEventListener("dom-ready", (e) => {
-        tab.states.hasLoaded = true;
+        tab.states.hasLoaded = true; // Set the tab state to indicate the tab has loaded
         if (focusedTabId == tab.id) utils.updateMetadata(tab); // Updates titles IF the focused tab is the tab itself
     });
+    /* Navigation Started */
     tab.view.addEventListener("did-start-navigation", (e) => {
         if (!e.isMainFrame) return; // prevents IFrames from triggering this event
         createTabButton(tab, "../assets/loading2.gif"); // Does not remake button, but changes favicon
         isFaviconUpdated = false;
     });
+    /* Page Finished Loading */
     tab.view.addEventListener("did-finish-load", (e) => {
         if (!isFaviconUpdated) {
-            // fallback
+            // The below code retrieves the favicon of a webpage using Google's API.
+            // This is primarily used as a fallback, in case page-favicon-updated doesn't work properly.
             const googleApi = `https://www.google.com/s2/favicons?domain=${tab.view.getURL()}`;
             createTabButton(tab, googleApi);
         }
     });
+    /* Page Favicon Updated */
     tab.view.addEventListener("page-favicon-updated", (e) => {
-        console.log("focused tab - favicon has changed");
-        if (isFaviconUpdated) {
-            console.log("tab already has favicon, returning");
-            return;
-        }
-        const favicon = e.favicons[0];
+        if (isFaviconUpdated) return; // If the favicon has already updated, continue no further
+        const favicon = e.favicons[0]; // Get the first favicon in the favicon list
         if (favicon) {
-            console.log("create button: favicon thing " + favicon);
-            createTabButton(tab, favicon);
-            isFaviconUpdated = true;
+            createTabButton(tab, favicon); // Calls createTabButton, which updates the favicon rather than creating a button
+            isFaviconUpdated = true; // A check to stop future updates
         }
     });
-    focusTab(tab);
     return tab;
 }
 
+/*
+ * Focuses a tab (requires tab object).
+*/
 export function focusTab(tab) {
     focusedTabId = tab.id;
     hideAllTabs();
@@ -135,6 +145,9 @@ export function focusTab(tab) {
     tab.view.style.display = "flex";
 }
 
+/*
+ * Loops through all tabs and hides them.
+*/
 export function hideAllTabs() {
     const views = document.getElementById("webviews");
     for (const item of views.children) {
@@ -142,6 +155,9 @@ export function hideAllTabs() {
     }
 }
 
+/*
+ * Retrieves a tab object by its ID (UUID).
+*/
 export function getTabObjectById(tabId) {
     for (const item of tabs) {
         if (item.id == tabId) return item;
