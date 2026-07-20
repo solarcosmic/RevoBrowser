@@ -100,10 +100,22 @@
         #lowcatcher {
             position: absolute;
             bottom: 0;
-            left: 0;
-            width: 100vw;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 500px;
             height: calc(100vh / 16);
             z-index: 998;
+        }
+        #catcher {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 500px;
+            height: 32px;
+            /*height: calc(100vh / 16);*/
+            z-index: 9999;
+            cursor: text;
         }
 
         #new-tab-button {
@@ -139,7 +151,7 @@
                 </div>
             </div>
         </div>
-        <div id="catcher" style="position: absolute; top: 0; left: 0; width: 100vw; height: calc(100vh/16); z-index: 9999;"></div>
+        <div id="catcher"></div>
         <div id="lowcatcher"></div>
         <div id="webviews">
             

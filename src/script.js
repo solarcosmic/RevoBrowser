@@ -35,20 +35,20 @@ appbar.addEventListener("mouseleave", delayAppbar);
 
     catcher.addEventListener("mousemove", (event) => {
         document.getElementById("topbar").style.display = "flex";
-        /*catcher.style.pointerEvents = "none";*/
+        //catcher.style.pointerEvents = "none";
     })
     catcher.addEventListener("mouseleave", (event) => {
         document.getElementById("topbar").style.display = "none";
-        /*catcher.style.pointerEvents = "auto";*/
+        //catcher.style.pointerEvents = "auto";
     })
     lowcatcher.addEventListener("mousemove", (event) => {
         document.getElementById("appbar").style.display = "flex";
 
-        /*catcher.style.pointerEvents = "none";*/
+        //catcher.style.pointerEvents = "none";
     })
     lowcatcher.addEventListener("mouseleave", (event) => {
         document.getElementById("appbar").style.display = "none";
-        /*catcher.style.pointerEvents = "auto";*/
+        //catcher.style.pointerEvents = "auto";
     })
     /*        const checkTop16 = event.clientY <= window.innerHeight / 16;
         if (checkTop16) {
