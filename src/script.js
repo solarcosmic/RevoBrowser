@@ -78,3 +78,12 @@ function truncateString(str, num) {
 window.revoAPI.openNewTab((url) => {
     tabs.createTab(url || "https://google.com");
 })
+
+document.getElementById("topbar").addEventListener("click", () => {
+    document.getElementById("url-text").focus();
+})
+
+catcher.addEventListener("click", () => {
+    console.log("Catcher clicked!");
+    document.getElementById("genuine-omnibox").style.display = "block";
+})

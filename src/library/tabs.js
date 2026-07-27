@@ -99,7 +99,6 @@ export function createTabButton(tab, favicon) {
 */
 export function registerTabListeners(tab) {
     var isFaviconUpdated = false;
-    var lastURL = "";
     /* Page Title Updated */
     tab.view.addEventListener("page-title-updated", (e) => {
         if (focusedTabId == tab.id) utils.updateMetadata(tab); // Updates titles IF the focused tab is the tab itself
@@ -109,21 +108,20 @@ export function registerTabListeners(tab) {
         tab.states.hasLoaded = true; // Set the tab state to indicate the tab has loaded
         if (focusedTabId == tab.id) utils.updateMetadata(tab); // Updates titles IF the focused tab is the tab itself
     });
+
+
     tab.view.addEventListener("did-start-navigation", (e) => {
         if (!e.isMainFrame || e.isInPlace) return; // prevents IFrames from triggering this event & ignores #hashes
         isFaviconUpdated = false;
-        lastURL = e.url;
+        console.log("NAVIGATION STARTED");
     });
     /* Navigation Started */
     tab.view.addEventListener("did-start-loading", (e) => {
         const url = tab.view.getURL();
-        if (url != lastURL || !isFaviconUpdated) {
-            createTabButton(tab, "../assets/loading2.gif"); // Does not remake button, but changes favicon
-            if (url != lastURL) {
-                isFaviconUpdated = false;
-                lastURL = url;
-            }
-        }; // If the favicon has already updated, continue no further
+        if (isFaviconUpdated) return;
+        console.log("STARTED LOADING");
+        createTabButton(tab, "../assets/loading2.gif"); // Does not remake button, but changes favicon
+        // If the favicon has already updated, continue no further
     });
     /* Page Finished Loading */
     tab.view.addEventListener("did-finish-load", (e) => {
@@ -133,6 +131,7 @@ export function registerTabListeners(tab) {
             const googleApi = `https://www.google.com/s2/favicons?domain=${tab.view.getURL()}`;
             createTabButton(tab, googleApi);
             isFaviconUpdated = true;
+            console.log("USED BACKUP FAVICON");
         }
     });
     /* Page Favicon Updated */
@@ -140,6 +139,7 @@ export function registerTabListeners(tab) {
         //if (isFaviconUpdated) return; // If the favicon has already updated, continue no further
         //tab.states.isLoading = tab.view.isLoading();
         const favicon = e.favicons[0]; // Get the first favicon in the favicon list
+        console.log("ALERT: NEW FAVICON - " + favicon);
         if (favicon) {
             createTabButton(tab, favicon); // Calls createTabButton, which updates the favicon rather than creating a button
             isFaviconUpdated = true; // A check to stop future updates

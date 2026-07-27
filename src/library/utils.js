@@ -11,7 +11,7 @@ export function testing() {
 
 export function updateMetadata(tab) {
     document.getElementById("url-text-drawer").textContent = truncateString(tab.view.getTitle(), 75);
-    document.getElementById("url-text").textContent = truncateString(new URL(tab.view.getURL()).hostname, 75);
+    document.getElementById("url-text").value = truncateString(new URL(tab.view.getURL()).hostname, 75);
 }
 
 /* https://stackoverflow.com/a/53637828 */
