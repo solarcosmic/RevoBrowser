@@ -12,6 +12,8 @@ var focusedTabId;
 
 const views = document.getElementById("webviews");
 const tabButtons = document.getElementById("tabs");
+const urlBox = document.getElementById("omnibox-input-text");
+const omniboxSuggestions = document.getElementById("omnibox-suggestions");
 
 /*
  * Creates a tab, opening a URL; namely its object and the WebView itself.
@@ -117,6 +119,7 @@ export function registerTabListeners(tab) {
     });
     /* Navigation Started */
     tab.view.addEventListener("did-start-loading", (e) => {
+        if (!tab.view) return;
         const url = tab.view.getURL();
         if (isFaviconUpdated) return;
         console.log("STARTED LOADING");
@@ -178,3 +181,67 @@ export function getTabObjectById(tabId) {
     }
     return null;
 }
+
+export async function suggestSearch() {
+    if (urlBox.value.trim() == "") {
+        clearSuggestionButtons();
+        return;
+    }; // Avoids nothing and whitespace from continuing further
+
+    await fetch("https://google.com/complete/search?output=toolbar&q=" + urlBox.value).then(res => {
+        if (!res.ok) throw new Error("Suggestion error: " + res.status);
+        return res.text();
+    }).then(data => {
+        console.log(data);
+        handleSearchXml(data);
+/*.then(json => {
+            console.log(json);
+        }).catch(err => {
+            console.error("uh oh!");
+        })*/
+    })
+}
+
+async function handleSearchXml(data) {
+    const thing = await window.revoLibrary.parseXml(data);
+    const parsed = JSON.parse(thing);
+    console.log(parsed);
+    const suggestions = parsed.toplevel.CompleteSuggestion;
+    if (!suggestions) return;
+    console.log(suggestions);
+    createSuggestionButtons(suggestions);
+}
+
+async function clearSuggestionButtons() {
+    omniboxSuggestions.innerHTML = "";
+}
+
+async function createSuggestionButtons(suggestions) {
+    clearSuggestionButtons();
+    for (const item of suggestions.slice(0, 5)) { // Loop through result, slice to get only first 5 entries
+        const suggestion = item.suggestion[0]["$"].data;
+        const omniboxItem = utils.createElementWithClass("div", "omnibox-item");
+        omniboxItem.textContent = suggestion;
+        omniboxSuggestions.appendChild(omniboxItem);
+
+        omniboxItem.addEventListener("click", () => {
+            createTab(`https://google.com/search?q=${suggestion}`);
+            document.getElementById("genuine-omnibox").style.display = "none";
+        })
+        
+        //suggestion[0]["$"].data
+    }
+}
+
+var typeTime;
+const debounceInterval = 500;
+
+urlBox.addEventListener("keyup", () => {
+    clearTimeout(typeTime);
+    typeTime = setTimeout(suggestSearch, debounceInterval);
+})
+
+urlBox.addEventListener("keydown", () => {
+    clearTimeout(typeTime);
+})
+

@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "electron-context-menu": "^4.1.2",
-    "electron-dl": "^4.0.0"
+    "electron-dl": "^4.0.0",
+    "xml2js": "^0.6.2"
   }
 }

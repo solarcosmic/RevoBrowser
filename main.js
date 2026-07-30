@@ -1,9 +1,10 @@
-import { app, BrowserWindow, session } from 'electron';
+import { app, BrowserWindow, ipcMain, session } from 'electron';
 import contextMenu from 'electron-context-menu';
 import download from 'electron-dl';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
+import xml2js from 'xml2js';
 
 // prefaces for es6
 const __filename = fileURLToPath(import.meta.url);
@@ -76,3 +77,8 @@ function truncateString(str, num) {
         return str;
     }
 }
+
+ipcMain.handle("xml-to-json", async (evt, string) => {
+  const result = await xml2js.parseStringPromise(string);
+  return JSON.stringify(result);
+})

@@ -22,3 +22,9 @@ export function truncateString(str, num) {
         return str;
     }
 }
+
+export function createElementWithClass(type = "div", className) {
+    const element = document.createElement(type);
+    if (className) element.classList.add(className);
+    return element;
+}

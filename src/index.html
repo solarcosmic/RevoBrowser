@@ -188,11 +188,26 @@
             color: #ffffff;
             width: 100%;
             border: none;
-            height: 40px;
+            height: 30px;
             font-size: 15px;
+            font-family: "Golos Text", sans-serif;
+        }
+        #input-box {
+            background-color: #000000c0;
         }
         .padder-4px {
             padding: 4px 4px;
+        }
+        .omnibox-item {
+            background-color: #00000054;
+            color: #ffffff;
+            padding: 8px 8px;
+            border-radius: 8px;
+            cursor: default;
+            user-select: none;
+        }
+        .omnibox-item:hover {
+            background-color: #24242454;
         }
     </style>
 </head>
@@ -222,6 +237,9 @@
                     <input type="text" id="omnibox-input-text" placeholder="Search or type a URL..."></input>
                 </div>
             </div>
+                                <div id="omnibox-suggestions">
+                        <div class="omnibox-item">jimmy neutron</div>
+                    </div>
         </div>
         <div id="catcher"></div>
         <div id="lowcatcher"></div>
