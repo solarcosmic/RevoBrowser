@@ -101,6 +101,7 @@ export function createTabButton(tab, favicon) {
 */
 export function registerTabListeners(tab) {
     var isFaviconUpdated = false;
+    var faviconTimeout;
     /* Page Title Updated */
     tab.view.addEventListener("page-title-updated", (e) => {
         if (focusedTabId == tab.id) utils.updateMetadata(tab); // Updates titles IF the focused tab is the tab itself
@@ -115,9 +116,19 @@ export function registerTabListeners(tab) {
     tab.view.addEventListener("did-start-navigation", (e) => {
         if (!e.isMainFrame || e.isInPlace) return; // prevents IFrames from triggering this event & ignores #hashes
         isFaviconUpdated = false;
+        clearTimeout(faviconTimeout);
         console.log("NAVIGATION STARTED");
         createTabButton(tab, "../assets/loading2.gif"); // Does not remake button, but changes favicon
         utils.navigationColourCheck();
+
+        faviconTimeout = setTimeout(() => {
+            if (!isFaviconUpdated) {
+                const googleApi = `https://www.google.com/s2/favicons?sz=64&domain=${new URL(tab.view.getURL()).hostname}`;
+                createTabButton(tab, googleApi);
+                isFaviconUpdated = true;
+                console.log("RELAY: Page took too long to load, relaying to fallback favicon loader");
+            }
+        }, 10000);
     });
     /* Navigation Started */
     tab.view.addEventListener("did-start-loading", (e) => {
@@ -133,7 +144,7 @@ export function registerTabListeners(tab) {
         if (!isFaviconUpdated && !tab.view.isLoading()) {
             // The below code retrieves the favicon of a webpage using Google's API.
             // This is primarily used as a fallback, in case page-favicon-updated doesn't work properly.
-            const googleApi = `https://www.google.com/s2/favicons?domain=${tab.view.getURL()}`;
+            const googleApi = `https://www.google.com/s2/favicons?sz=64&domain=${tab.view.getURL()}`;
             createTabButton(tab, googleApi);
             isFaviconUpdated = true;
             console.log("USED BACKUP FAVICON");
@@ -150,6 +161,7 @@ export function registerTabListeners(tab) {
     tab.view.addEventListener("page-favicon-updated", (e) => {
         //if (isFaviconUpdated) return; // If the favicon has already updated, continue no further
         //tab.states.isLoading = tab.view.isLoading();
+        clearTimeout(faviconTimeout);
         const favicon = e.favicons[0]; // Get the first favicon in the favicon list
         console.log("ALERT: NEW FAVICON - " + favicon);
         if (favicon) {
@@ -168,6 +180,7 @@ export function focusTab(tab) {
     focusedTabId = tab.id;
     hideAllTabs();
     if (tab.states.hasLoaded) utils.updateMetadata(tab);
+    utils.navigationColourCheck(tab);
     tab.view.style.display = "flex";
 }
 

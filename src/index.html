@@ -222,36 +222,42 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 64px;
+            width: 128px;
             height: 32px;
+            background-color: #0000007e;
+            
         }
     </style>
 </head>
 <body>
     <div id="container">
-        <div id="navigations">
-            <img id="nav-back" src="../assets/chevron-left-solid-full.svg" style="width: 32px; height: 32px;" class="svg-white"></img>
-            <img id="nav-forward" src="../assets/chevron-right-solid-full.svg" style="width: 32px; height: 32px;" class="svg-white"></img>
-            <img id="nav-refresh" src="../assets/rotate-right-solid-full.svg" style="width: 32px; height: 32px;" class="svg-white"></img>
-        </div>
-        <div id="topbar" style="display: none;">
-            <div><input type="text" id="url-text"></input></div>
-            <div id="omnibox" style="display: none;">
-                <div id="suggestions">
-                    <div id="suggestion_1">Search or type a URL...</div>
+        <span id="shift-panel">
+            <div id="navigations">
+                <img id="nav-back" src="../assets/chevron-left-solid-full.svg" style="width: 32px; height: 32px;" class="svg-white"></img>
+                <img id="nav-forward" src="../assets/chevron-right-solid-full.svg" style="width: 32px; height: 32px;" class="svg-white"></img>
+                <img id="nav-refresh" src="../assets/rotate-right-solid-full.svg" style="width: 32px; height: 32px;" class="svg-white"></img>
+            </div>
+            <div id="topbar" style="display: none;">
+                <div><input type="text" id="url-text"></input></div>
+                <div id="omnibox" style="display: none;">
+                    <div id="suggestions">
+                        <div id="suggestion_1">Search or type a URL...</div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div id="appbar" style="display: none;">
-            <div>
-                <div id="url-text-drawer">App Drawer</div>
-                <div id="tabs">
-                    <button id="new-tab-button">
-                        <img id="newtab-img" src="../assets/plus-solid-full.svg" style="width: 32px; height: 32px;">
-                    </button>
+            <div id="appbar" style="display: none;">
+                <div>
+                    <div id="url-text-drawer">App Drawer</div>
+                    <div id="tabs">
+                        <button id="new-tab-button">
+                            <img id="newtab-img" src="../assets/plus-solid-full.svg" style="width: 32px; height: 32px;">
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
+            <div id="catcher"></div>
+            <div id="lowcatcher"></div>
+        </span>
         <div id="genuine-omnibox" style="display: none;">
             <div id="input-box">
                 <div style="padding: 8px 8px;">
@@ -262,8 +268,6 @@
                         <div class="omnibox-item">jimmy neutron</div>
                     </div>
         </div>
-        <div id="catcher"></div>
-        <div id="lowcatcher"></div>
         <div id="webviews">
             
         </div>

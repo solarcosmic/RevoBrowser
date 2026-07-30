@@ -118,3 +118,18 @@ document.getElementById("nav-refresh").addEventListener("click", () => {
     if (!focusedTab?.view) return;
     focusedTab.view.reload();
 })
+
+document.addEventListener("keydown", (evt) => {
+    if (evt.code == "ShiftLeft") {
+        if (evt.repeat) return;
+        console.log("KEY DOWN!");
+        document.getElementById("shift-panel").style.display = "none";
+    }
+});
+
+document.addEventListener("keyup", (evt) => {
+    if (evt.code == "ShiftLeft") {
+        console.log("KEY UP!");
+        document.getElementById("shift-panel").style.display = "block";
+    }
+});

@@ -42,6 +42,7 @@ export function createElementWithId(type = "div", id) {
 
 export function navigationColourCheck(tab = tabs.getActiveTab()) {
     if (!tab?.view) return;
+    if (!tab.states.hasLoaded) return;
     if (tab.view.canGoBack()) {
         navBack.classList.add("svg-white");
     } else {
