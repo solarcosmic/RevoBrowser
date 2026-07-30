@@ -104,26 +104,28 @@ export function registerTabListeners(tab) {
     /* Page Title Updated */
     tab.view.addEventListener("page-title-updated", (e) => {
         if (focusedTabId == tab.id) utils.updateMetadata(tab); // Updates titles IF the focused tab is the tab itself
+        utils.navigationColourCheck();
     });
     /* DOM Ready */
     tab.view.addEventListener("dom-ready", (e) => {
         tab.states.hasLoaded = true; // Set the tab state to indicate the tab has loaded
         if (focusedTabId == tab.id) utils.updateMetadata(tab); // Updates titles IF the focused tab is the tab itself
+        utils.navigationColourCheck();
     });
-
-
     tab.view.addEventListener("did-start-navigation", (e) => {
         if (!e.isMainFrame || e.isInPlace) return; // prevents IFrames from triggering this event & ignores #hashes
         isFaviconUpdated = false;
         console.log("NAVIGATION STARTED");
+        createTabButton(tab, "../assets/loading2.gif"); // Does not remake button, but changes favicon
+        utils.navigationColourCheck();
     });
     /* Navigation Started */
     tab.view.addEventListener("did-start-loading", (e) => {
         if (!tab.view) return;
-        const url = tab.view.getURL();
         if (isFaviconUpdated) return;
         console.log("STARTED LOADING");
-        createTabButton(tab, "../assets/loading2.gif"); // Does not remake button, but changes favicon
+        //
+        utils.navigationColourCheck();
         // If the favicon has already updated, continue no further
     });
     /* Page Finished Loading */
@@ -135,8 +137,15 @@ export function registerTabListeners(tab) {
             createTabButton(tab, googleApi);
             isFaviconUpdated = true;
             console.log("USED BACKUP FAVICON");
+            utils.navigationColourCheck();
         }
     });
+    tab.view.addEventListener("did-fail-load", (e) => {
+        console.log("Uh oh! Tab failed to load");
+    });
+    tab.view.addEventListener("render-process-gone", (evt, details) => {
+        console.log(`Render process gone! Reason: ${details.reason} with exit code ${details.exitCode}`);
+    })
     /* Page Favicon Updated */
     tab.view.addEventListener("page-favicon-updated", (e) => {
         //if (isFaviconUpdated) return; // If the favicon has already updated, continue no further
@@ -226,10 +235,20 @@ async function createSuggestionButtons(suggestions) {
 
         omniboxItem.addEventListener("click", () => {
             createTab(`https://google.com/search?q=${suggestion}`);
+            urlBox.value = "";
+            clearSuggestionButtons();
             document.getElementById("genuine-omnibox").style.display = "none";
-        })
-        
+        });
         //suggestion[0]["$"].data
+    }
+}
+
+export function getActiveTab() {
+    const tab = getTabObjectById(focusedTabId);
+    if (tab) {
+        return tab;
+    } else {
+        return null;
     }
 }
 
@@ -241,7 +260,12 @@ urlBox.addEventListener("keyup", () => {
     typeTime = setTimeout(suggestSearch, debounceInterval);
 })
 
-urlBox.addEventListener("keydown", () => {
+urlBox.addEventListener("keydown", (e) => {
     clearTimeout(typeTime);
-})
-
+    if (e.key == "Enter" && urlBox.value.trim() != "") {
+        createTab(`https://google.com/search?q=${urlBox.value.trim()}`);
+        urlBox.value = "";
+        clearSuggestionButtons();
+        document.getElementById("genuine-omnibox").style.display = "none";
+    }
+});

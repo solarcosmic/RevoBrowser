@@ -83,6 +83,7 @@
             display: flex;
             justify-content: center;
             pointer-events: none;
+            user-select: none;
         }
         #appbar > div {
             pointer-events: auto;
@@ -209,10 +210,30 @@
         .omnibox-item:hover {
             background-color: #24242454;
         }
+        [id*="nav-"] {
+            background-color: #24242454;
+            color: #ffffff;
+            border: none;
+        }
+        .svg-white {
+            filter: brightness(0) invert(1);
+        }
+        #navigations {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 64px;
+            height: 32px;
+        }
     </style>
 </head>
 <body>
     <div id="container">
+        <div id="navigations">
+            <img id="nav-back" src="../assets/chevron-left-solid-full.svg" style="width: 32px; height: 32px;" class="svg-white"></img>
+            <img id="nav-forward" src="../assets/chevron-right-solid-full.svg" style="width: 32px; height: 32px;" class="svg-white"></img>
+            <img id="nav-refresh" src="../assets/rotate-right-solid-full.svg" style="width: 32px; height: 32px;" class="svg-white"></img>
+        </div>
         <div id="topbar" style="display: none;">
             <div><input type="text" id="url-text"></input></div>
             <div id="omnibox" style="display: none;">

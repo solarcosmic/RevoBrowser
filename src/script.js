@@ -83,7 +83,38 @@ document.getElementById("topbar").addEventListener("click", () => {
     document.getElementById("url-text").focus();
 })
 
-catcher.addEventListener("click", () => {
+catcher.addEventListener("click", (evt) => {
+    evt.stopPropagation();
     console.log("Catcher clicked!");
     document.getElementById("genuine-omnibox").style.display = "block";
+})
+
+document.addEventListener("click", (evt) => {
+    console.log("Document click");
+    const isClickInside = document.getElementById("genuine-omnibox").contains(evt.target);
+    if (!isClickInside) {
+        document.getElementById("genuine-omnibox").style.display = "none";
+    }
+});
+
+document.getElementById("nav-back").addEventListener("click", () => {
+    const focusedTab = tabs.getActiveTab();
+    if (!focusedTab?.view) return;
+    if (focusedTab.view.canGoBack()) {
+        focusedTab.view.goBack();
+    }
+})
+
+document.getElementById("nav-forward").addEventListener("click", () => {
+    const focusedTab = tabs.getActiveTab();
+    if (!focusedTab?.view) return;
+    if (focusedTab.view.canGoForward()) {
+        focusedTab.view.goForward();
+    }
+})
+
+document.getElementById("nav-refresh").addEventListener("click", () => {
+    const focusedTab = tabs.getActiveTab();
+    if (!focusedTab?.view) return;
+    focusedTab.view.reload();
 })
