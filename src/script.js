@@ -27,6 +27,7 @@ function delayAppbar() {
 const lowcatcher = document.getElementById("lowcatcher");
 const appbar = document.getElementById("appbar");
 const catcher = document.getElementById("catcher");
+const navcatcher = document.getElementById("nav-area");
 
 lowcatcher.addEventListener("mouseenter", showAppbar);
 lowcatcher.addEventListener("mouseleave", delayAppbar);
@@ -48,6 +49,15 @@ appbar.addEventListener("mouseleave", delayAppbar);
     })
     lowcatcher.addEventListener("mouseleave", (event) => {
         document.getElementById("appbar").style.display = "none";
+        //catcher.style.pointerEvents = "auto";
+    })
+    navcatcher.addEventListener("mousemove", (event) => {
+        document.getElementById("navigations").style.display = "flex";
+
+        //catcher.style.pointerEvents = "none";
+    })
+    navcatcher.addEventListener("mouseleave", (event) => {
+        document.getElementById("navigations").style.display = "none";
         //catcher.style.pointerEvents = "auto";
     })
     /*        const checkTop16 = event.clientY <= window.innerHeight / 16;

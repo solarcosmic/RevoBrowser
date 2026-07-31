@@ -137,6 +137,14 @@
             z-index: 9999;
             cursor: text;
         }
+        #navcatcher {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 128px;
+            height: 32px;
+
+        }
 
         #new-tab-button {
             margin-top: auto;
@@ -225,17 +233,21 @@
             width: 128px;
             height: 32px;
             background-color: #0000007e;
-            
+            user-select: none;
+            z-index: 999;
         }
     </style>
 </head>
 <body>
     <div id="container">
         <span id="shift-panel">
-            <div id="navigations">
-                <img id="nav-back" src="../assets/chevron-left-solid-full.svg" style="width: 32px; height: 32px;" class="svg-white"></img>
-                <img id="nav-forward" src="../assets/chevron-right-solid-full.svg" style="width: 32px; height: 32px;" class="svg-white"></img>
-                <img id="nav-refresh" src="../assets/rotate-right-solid-full.svg" style="width: 32px; height: 32px;" class="svg-white"></img>
+            <div id="nav-area">
+                <div id="navigations" style="display: none;">
+                    <img id="nav-back" src="../assets/chevron-left-solid-full.svg" style="width: 32px; height: 32px;" class="svg-white"></img>
+                    <img id="nav-forward" src="../assets/chevron-right-solid-full.svg" style="width: 32px; height: 32px;" class="svg-white"></img>
+                    <img id="nav-refresh" src="../assets/rotate-right-solid-full.svg" style="width: 32px; height: 32px;" class="svg-white"></img>
+                </div>
+                <div id="navcatcher"></div>
             </div>
             <div id="topbar" style="display: none;">
                 <div><input type="text" id="url-text"></input></div>
