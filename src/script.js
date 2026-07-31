@@ -119,7 +119,7 @@ document.getElementById("nav-refresh").addEventListener("click", () => {
     focusedTab.view.reload();
 })
 
-document.addEventListener("keydown", (evt) => {
+/*document.addEventListener("keydown", (evt) => {
     if (evt.code == "ShiftLeft") {
         if (evt.repeat) return;
         console.log("KEY DOWN!");
@@ -132,4 +132,12 @@ document.addEventListener("keyup", (evt) => {
         console.log("KEY UP!");
         document.getElementById("shift-panel").style.display = "block";
     }
-});
+});*/
+
+window.revoAPI.toggleShift((val) => {
+    if (val) {
+        document.getElementById("shift-panel").style.display = "none";
+    } else {
+        document.getElementById("shift-panel").style.display = "block";
+    }
+})

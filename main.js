@@ -57,8 +57,17 @@ app.on("web-contents-created", (evt, contents) => {
         }
       ]
     })
-  }
-})
+  };
+  contents.on("before-input-event", (evt, input) => {
+      if (input.key.toLowerCase() == "shift") {
+        if (input.type == "keyDown") {
+          win.webContents.send("toggle-shift", true);
+        } else if (input.type == "keyUp") {
+          win.webContents.send("toggle-shift", false);
+        }
+      }
+    });
+});
 
 app.whenReady().then(() => {
   const mainSession = session.defaultSession;
