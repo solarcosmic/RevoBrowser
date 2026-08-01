@@ -12,3 +12,9 @@ contextBridge.exposeInMainWorld("revoAPI", {
 contextBridge.exposeInMainWorld("revoLibrary", {
     parseXml: (xml) => ipcRenderer.invoke('xml-to-json', xml)
 });
+
+contextBridge.exposeInMainWorld("revoStore", {
+    get: (key) => ipcRenderer.invoke("revo-store-get", key),
+    set: (key, val) => ipcRenderer.invoke("revo-store-set", key, val),
+    delete: (key) => ipcRenderer.invoke("revo-store-delete", key)
+});

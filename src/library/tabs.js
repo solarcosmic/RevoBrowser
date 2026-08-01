@@ -318,7 +318,7 @@ export function getActiveTab() {
     }
 }
 
-export function saveTabs() {
+export async function saveTabs() {
     var queuedTabs = [];
     for (const tab of tabs) {
         const cachedObject = {
@@ -328,16 +328,18 @@ export function saveTabs() {
         }
         queuedTabs.push(cachedObject);
     }
-    localStorage.setItem("revo:saved_tabs", JSON.stringify(queuedTabs));
+    await window.revoStore.set("saved_tabs", queuedTabs);
+    //localStorage.setItem("revo:saved_tabs", JSON.stringify(queuedTabs));
 };
 
-export function loadSavedTabs() {
-    const storedString = localStorage.getItem("revo:saved_tabs");
-    if (!storedString) return;
+export async function loadSavedTabs() {
+    const queuedTabs = await window.revoStore.get("saved_tabs");
+    if (!queuedTabs) return;
+    console.log(queuedTabs);
 
-    const queuedTabs = JSON.parse(storedString);
+    //const queuedTabs = JSON.parse(queuedTabs);
     if (queuedTabs.length < 1) {
-        tabs.createTab("https://google.com");
+        createTab("https://google.com");
         return;
     }
     for (const item of queuedTabs) {
@@ -356,7 +358,11 @@ urlBox.addEventListener("keyup", () => {
 urlBox.addEventListener("keydown", (e) => {
     clearTimeout(typeTime);
     if (e.key == "Enter" && urlBox.value.trim() != "") {
-        createTab(`https://google.com/search?q=${urlBox.value.trim()}`);
+        if (utils.isValidURL(urlBox.value.trim())) {
+            createTab(urlBox.value.trim());
+        } else {
+            createTab(`https://google.com/search?q=${urlBox.value.trim()}`);
+        }
         urlBox.value = "";
         clearSuggestionButtons();
         elements.id("genuine-omnibox").style.display = "none";

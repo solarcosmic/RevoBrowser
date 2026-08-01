@@ -147,10 +147,12 @@ window.revoAPI.onMouseClick((x, y) => {
 
 document.addEventListener("DOMContentLoaded", () => {
     tabs.loadSavedTabs();
-    localStorage.setItem("revo:clean_exit", false);
+    window.revoStore.set("clean_exit", false);
+    //localStorage.setItem("revo:clean_exit", false);
 });
 
 window.addEventListener("beforeunload", () => {
     tabs.saveTabs();
-    localStorage.setItem("revo:clean_exit", true);
+    window.revoStore.set("clean_exit", true);
+    //localStorage.setItem("revo:clean_exit", true);
 })

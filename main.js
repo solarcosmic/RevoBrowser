@@ -89,15 +89,19 @@ app.whenReady().then(() => {
   const electronPatch = originalAgent.replace(/ Electron\/[^\s]+/, '');
   const revoPatch = electronPatch.replace(/ revobrowser\/[^\s]+/, ` Revo/${app.getVersion() || "1.0.0"}`);
   mainSession.setUserAgent(revoPatch);
+  if (store.get("clean_exit") == false) { // false because on first startup this doesn't exist
+    dialog.showMessageBoxSync(win, {
+      type: "warning",
+      message: "Incorrect Shutdown",
+      title: "Revo - Error",
+      buttons: ["Ok"],
+      detail: `It seems that Revo may have shut down incorrectly, and tab data may not have been accurately saved.
+      \n\n
+      Revo will now attempt to open the latest record. If no record is present, Revo will create a single tab by default.`
+    });
+  };
   createWindow();
   registerShortcuts();
-  dialog.showMessageBox(win, {
-    type: "warning",
-    message: "Incorrect Shutdown",
-    title: "Revo - Error",
-    buttons: ["Yes", "No"],
-    detail: "It seems that Revo may have shut down incorrectly, and tab data may not have been accurately saved.\n\nWould you like Revo to attempt to load the latest record? If no record is present, Revo will create a single tab by default."
-  })
 });
 
 /* https://stackoverflow.com/a/53637828 */
@@ -121,4 +125,16 @@ function registerShortcuts() {
 ipcMain.handle("xml-to-json", async (evt, string) => {
   const result = await xml2js.parseStringPromise(string);
   return JSON.stringify(result);
+});
+
+ipcMain.handle("revo-store-get", (evt, key) => {
+  return store.get(key);
+});
+
+ipcMain.handle("revo-store-set", (evt, key, val) => {
+  store.set(key, val);
+});
+
+ipcMain.handle("revo-store-delete", (evt, key) => {
+  store.delete(key);
 });
