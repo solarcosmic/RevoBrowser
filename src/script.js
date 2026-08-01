@@ -129,25 +129,16 @@ document.getElementById("nav-refresh").addEventListener("click", () => {
     focusedTab.view.reload();
 })
 
-/*document.addEventListener("keydown", (evt) => {
-    if (evt.code == "ShiftLeft") {
-        if (evt.repeat) return;
-        console.log("KEY DOWN!");
-        document.getElementById("shift-panel").style.display = "none";
-    }
-});
-
-document.addEventListener("keyup", (evt) => {
-    if (evt.code == "ShiftLeft") {
-        console.log("KEY UP!");
-        document.getElementById("shift-panel").style.display = "block";
-    }
-});*/
-
 window.revoAPI.onToggleShift((val) => {
     if (val) {
         document.getElementById("shift-panel").style.display = "none";
     } else {
         document.getElementById("shift-panel").style.display = "block";
     }
+});
+
+// TODO: add support for maximise resize
+window.revoAPI.onWindowResized(() => {
+    console.log("Window resized");
+    utils.renderCatcherWidth();
 });

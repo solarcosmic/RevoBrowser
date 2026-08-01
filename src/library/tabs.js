@@ -14,6 +14,9 @@ const views = document.getElementById("webviews");
 const tabButtons = document.getElementById("tabs");
 const urlBox = document.getElementById("omnibox-input-text");
 const omniboxSuggestions = document.getElementById("omnibox-suggestions");
+const appbar = document.getElementById("appbar");
+const lowcatcher = document.getElementById("lowcatcher");
+const appbarHitbox = document.getElementById("appbar-insert");
 
 /*
  * Creates a tab, opening a URL; namely its object and the WebView itself.
@@ -57,8 +60,12 @@ export function createTab(url = "https://google.com", focus = true) {
 
     registerTabListeners(tab); // Registers all relevant events (e.g. favicon changes)
     if (focus) focusTab(tab); // Sets the newly created tab to be the one in focus
+
+    utils.renderCatcherWidth();
     return tab;
 }
+
+
 
 /*
  * Creates a tab button in the App Drawer.
@@ -116,6 +123,7 @@ export function closeTab(tab) {
             hideAllTabs();
         }
     }
+    utils.renderCatcherWidth();
 }
 
 export function getTabButtonById(id) {

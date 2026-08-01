@@ -1,3 +1,9 @@
+<!--
+   Revo Browser
+   Copyright (c) 2026 solarcosmic
+   
+   This browser is free of use but may contain a license, check the repository for details.
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -85,7 +91,7 @@
             pointer-events: none;
             user-select: none;
         }
-        #appbar > div {
+        #appbar-insert {
             pointer-events: auto;
             /*background-color: rgba(0, 0, 0, 0.5);*/
             /* From https://css.glass */
@@ -97,7 +103,6 @@
             border: 1px solid rgba(0, 0, 0, 0.3);
             padding: 4px 4px;
             color: #ffffff;
-            width: 500px;
             border-radius: 8px;
         }
         #appbar button {
@@ -258,7 +263,7 @@
                 </div>
             </div>
             <div id="appbar" style="display: none;">
-                <div>
+                <div id="appbar-insert">
                     <div id="url-text-drawer">App Drawer</div>
                     <div id="tabs">
                         <button id="new-tab-button">

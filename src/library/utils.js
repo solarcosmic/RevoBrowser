@@ -9,6 +9,9 @@ import { tabs } from "library/packman";
 
 const navBack = document.getElementById("nav-back");
 const navForward = document.getElementById("nav-forward");
+const appbar = document.getElementById("appbar");
+const lowcatcher = document.getElementById("lowcatcher");
+const appbarHitbox = document.getElementById("appbar-insert");
 
 export function testing() {
     console.log("testing!");
@@ -53,4 +56,13 @@ export function navigationColourCheck(tab = tabs.getActiveTab()) {
     } else {
         navForward.classList.remove("svg-white");
     }
+}
+
+export function renderCatcherWidth() {
+    const displayState = appbar.style.display; // Log the original display state of the appbar
+    appbar.style.display = "flex"; // Make it visible briefly (hacky method)
+    const width = appbarHitbox.offsetWidth || 500; // Capture the width of the appbar in pixels
+    appbar.style.display = displayState; // Revert the appbar to its original display state
+
+    lowcatcher.style.width = `${width}px`; // Set the appbar hitbox's width to the width of the appbar
 }

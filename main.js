@@ -27,6 +27,10 @@ const createWindow = () => {
   win.setMenu(null);
   win.loadFile('src/index.html');
   win.webContents.openDevTools();
+
+  win.on("resized", () => {
+    win.webContents.send("window-resized");
+  })
 }
 
 app.on("web-contents-created", (evt, contents) => {
