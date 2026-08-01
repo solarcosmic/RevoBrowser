@@ -1,5 +1,5 @@
 {
-  "name": "revobrowser",
+  "name": "Revo Browser",
   "version": "1.0.0",
   "description": "",
   "homepage": "https://github.com/solarcosmic/RevoBrowser#readme",
@@ -16,14 +16,20 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
+    "app:dir": "electron-builder --dir",
+    "app:dist": "electron-builder",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "electron": "^42.4.1"
+    "electron": "^42.4.1",
+    "electron-builder": "^26.15.3"
   },
   "dependencies": {
     "electron-context-menu": "^4.1.2",
     "electron-dl": "^4.0.0",
     "xml2js": "^0.6.2"
+  },
+  "build": {
+    "appId": "net.solarcosmic.revobrowser"
   }
 }

@@ -39,6 +39,7 @@ app.on("web-contents-created", (evt, contents) => {
       window: contents,
       browserWindow: BrowserWindow.fromWebContents(contents),
       showInspectElement: true,
+      showSearchWithGoogle: false,
       //showSaveImageAs: true,
       showCopyImageAddress: true,
       showCopyVideoAddress: true,
@@ -71,6 +72,12 @@ app.on("web-contents-created", (evt, contents) => {
         }
       }
     });
+  // https://github.com/solarcosmic/OrbBrowser/blob/4ffeb3c50ada6ceea2edd37bbb4ca15e0500d1ac/main.js#L213
+  contents.on("before-mouse-event", (evt, mouse) => {
+    if (mouse.type == "mouseDown") {
+      if (win) win.webContents.send("mouse-click", mouse.x, mouse.y);
+    }
+  })
 });
 
 app.whenReady().then(() => {

@@ -4,7 +4,6 @@
  * 
  * This browser is free of use but may contain a license, check the repository for details.
 */
-
 import { tabs } from "library/packman";
 
 const navBack = document.getElementById("nav-back");
@@ -12,10 +11,6 @@ const navForward = document.getElementById("nav-forward");
 const appbar = document.getElementById("appbar");
 const lowcatcher = document.getElementById("lowcatcher");
 const appbarHitbox = document.getElementById("appbar-insert");
-
-export function testing() {
-    console.log("testing!");
-}
 
 export function updateMetadata(tab) {
     document.getElementById("url-text-drawer").textContent = truncateString(tab.view.getTitle(), 75);
@@ -80,3 +75,7 @@ export function isValidURL(url) {
         return false;
     }
 };
+
+export function id(element) {
+    return document.getElementById(element);
+}

@@ -7,8 +7,10 @@
 
 import * as tabs from "./tabs.js";
 import * as utils from "./utils.js";
+import * as elements from "./elements.js";
 
 export {
     tabs,
-    utils
+    utils,
+    elements
 }

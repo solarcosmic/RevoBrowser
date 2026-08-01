@@ -198,16 +198,17 @@
             text-align: center;
         }
         #omnibox-input-text {
-            background-color: #00000054;
+            background-color: #00000000;
             color: #ffffff;
             width: 100%;
             border: none;
             height: 30px;
             font-size: 15px;
             font-family: "Golos Text", sans-serif;
+            outline: none;
         }
         #input-box {
-            background-color: #000000c0;
+            background-color: #00000079;
         }
         .padder-4px {
             padding: 4px 4px;
@@ -216,9 +217,9 @@
             background-color: #00000054;
             color: #ffffff;
             padding: 8px 8px;
-            border-radius: 8px;
             cursor: default;
             user-select: none;
+            text-align: left;
         }
         .omnibox-item:hover {
             background-color: #24242454;
@@ -294,9 +295,7 @@
             </div>
             <div id="omnibox-suggestions"></div>
         </div>
-        <div id="webviews">
-            
-        </div>
+        <div id="webviews"></div>
     </div>
 </body>
 <script type="importmap">

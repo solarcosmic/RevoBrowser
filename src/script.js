@@ -4,77 +4,71 @@
  * 
  * This browser is free of use but may contain a license, check the repository for details.
 */
+import { utils, tabs, elements } from "library/packman";
+
+// Variables
+const lowcatcher = document.getElementById("lowcatcher");
+const catcher = document.getElementById("catcher");
+const navcatcher = document.getElementById("nav-area");
+const shiftPanel = document.getElementById("shift-panel");
+
+const topbar = document.getElementById("topbar");
+const appbar = document.getElementById("appbar");
+const navigations = document.getElementById("navigations");
 
 var focusedTabId = 1;
 var tabInc = 0;
-import { utils, tabs } from "library/packman";
-utils.testing();
-
-let appbarHideTimer = null;
+var appbarHideTimer = null;
 
 function showAppbar() {
     clearTimeout(appbarHideTimer);
-    document.getElementById("appbar").style.display = "flex";
-}
+    appbar.style.display = "flex";
+};
 
 function delayAppbar() {
     clearTimeout(appbarHideTimer);
     appbarHideTimer = setTimeout(() => {
-        document.getElementById("appbar").style.display = "none";
+        appbar.style.display = "none";
     }, 100);
-}
-
-const lowcatcher = document.getElementById("lowcatcher");
-const appbar = document.getElementById("appbar");
-const catcher = document.getElementById("catcher");
-const navcatcher = document.getElementById("nav-area");
+};
 
 lowcatcher.addEventListener("mouseenter", showAppbar);
 lowcatcher.addEventListener("mouseleave", delayAppbar);
 appbar.addEventListener("mouseenter", showAppbar);
 appbar.addEventListener("mouseleave", delayAppbar);
 
-    catcher.addEventListener("mousemove", (event) => {
-        document.getElementById("topbar").style.display = "flex";
-        //catcher.style.pointerEvents = "none";
-    })
-    catcher.addEventListener("mouseleave", (event) => {
-        document.getElementById("topbar").style.display = "none";
-        //catcher.style.pointerEvents = "auto";
-    })
-    lowcatcher.addEventListener("mousemove", (event) => {
-        document.getElementById("appbar").style.display = "flex";
+// URL Bar: Mouse Enter and Leave
+catcher.addEventListener("mousemove", (event) => {
+    topbar.style.display = "flex";
+});
+catcher.addEventListener("mouseleave", (event) => {
+    topbar.style.display = "none";
+});
 
-        //catcher.style.pointerEvents = "none";
-    })
-    lowcatcher.addEventListener("mouseleave", (event) => {
-        document.getElementById("appbar").style.display = "none";
-        //catcher.style.pointerEvents = "auto";
-    })
-    navcatcher.addEventListener("mousemove", (event) => {
-        document.getElementById("navigations").style.display = "flex";
+// App Drawer: Mouse Enter and Leave
+lowcatcher.addEventListener("mousemove", (event) => {
+    appbar.style.display = "flex";
+});
+lowcatcher.addEventListener("mouseleave", (event) => {
+    appbar.style.display = "none";
+});
 
-        //catcher.style.pointerEvents = "none";
-    })
-    navcatcher.addEventListener("mouseleave", (event) => {
-        document.getElementById("navigations").style.display = "none";
-        //catcher.style.pointerEvents = "auto";
-    })
-    /*        const checkTop16 = event.clientY <= window.innerHeight / 16;
-        if (checkTop16) {
-            document.getElementById("topbar").style.display = "block";
-        } else {
-            document.getElementById("topbar").style.display = "none";
-        }*/
+// Navigation: Mouse Enter and Leave
+navcatcher.addEventListener("mousemove", (event) => {
+    navigations.style.display = "flex";
+});
+navcatcher.addEventListener("mouseleave", (event) => {
+    navigations.style.display = "none";
+});
 
-tabs.createTab("https://google.com")
+tabs.createTab("https://google.com");
 
 document.getElementById("new-tab-button").addEventListener("click", () => {
-    const tab = tabs.createTab("https://google.com")
-    requestAnimationFrame(() => {
+    const tab = tabs.createTab("https://google.com");
+    requestAnimationFrame(() => { // Adds delay to make sure the tab has been made before focusing it
         tabs.focusTab(tab);
-    })
-})
+    });
+});
 
 /* https://stackoverflow.com/a/53637828 */
 function truncateString(str, num) {
@@ -83,62 +77,77 @@ function truncateString(str, num) {
     } else {
         return str;
     }
-}
-
-window.revoAPI.openNewTab((url) => {
-    tabs.createTab(url || "https://google.com");
-})
+};
 
 document.getElementById("topbar").addEventListener("click", () => {
     document.getElementById("url-text").focus();
-})
+});
 
 catcher.addEventListener("click", (evt) => {
     evt.stopPropagation();
-    console.log("Catcher clicked!");
     document.getElementById("genuine-omnibox").style.display = "block";
-})
+});
 
 document.addEventListener("click", (evt) => {
-    console.log("Document click");
     const isClickInside = document.getElementById("genuine-omnibox").contains(evt.target);
     if (!isClickInside) {
         document.getElementById("genuine-omnibox").style.display = "none";
     }
 });
 
+// Back, Forward, and Refresh Navigation
 document.getElementById("nav-back").addEventListener("click", () => {
     const focusedTab = tabs.getActiveTab();
-    if (!focusedTab?.view) return;
-    if (focusedTab.view.canGoBack()) {
-        focusedTab.view.goBack();
-    }
-})
+    if (!focusedTab?.view) return; // If the WebView doesn't exist, don't continue
+
+    if (focusedTab.view.canGoBack()) focusedTab.view.goBack();
+});
 
 document.getElementById("nav-forward").addEventListener("click", () => {
     const focusedTab = tabs.getActiveTab();
-    if (!focusedTab?.view) return;
-    if (focusedTab.view.canGoForward()) {
-        focusedTab.view.goForward();
-    }
-})
+    if (!focusedTab?.view) return; // If the WebView doesn't exist, don't continue
+
+    if (focusedTab.view.canGoForward()) focusedTab.view.goForward();
+});
 
 document.getElementById("nav-refresh").addEventListener("click", () => {
     const focusedTab = tabs.getActiveTab();
-    if (!focusedTab?.view) return;
-    focusedTab.view.reload();
-})
+    if (!focusedTab?.view) return; // If the WebView doesn't exist, don't continue
+
+    focusedTab.view.reload(); // Reloads the WebView
+});
+
+// IPC Handlers
+window.revoAPI.openNewTab((url) => {
+    tabs.createTab(url);
+});
 
 window.revoAPI.onToggleShift((val) => {
-    if (val) {
-        document.getElementById("shift-panel").style.display = "none";
-    } else {
-        document.getElementById("shift-panel").style.display = "block";
-    }
+    shiftPanel.style.display = val ? "none" : "block"; // If true, display = none, otherwise display = block
 });
 
 // TODO: add support for maximise resize
 window.revoAPI.onWindowResized(() => {
     console.log("Window resized");
     utils.renderCatcherWidth();
+});
+
+document.body.addEventListener("click", () => {
+    console.log("yes");
+    console.log(event.target.outerHTML);
+})
+
+window.revoAPI.onMouseClick((x, y) => {
+    const omnibox = elements.id("genuine-omnibox");
+    const element = document.elementFromPoint(x, y);
+
+    // Checks to make sure the user is not clicking on the omnibox
+    if (element.parentElement.id == "omnibox-suggestions" ||
+        element.id == "genuine-omnibox" ||
+        element.closest("#input-box") ||
+        element.id == "input-box")
+    return;
+
+    // If the omnibox is visible, set its display to none
+    if (omnibox.style.display == "block") omnibox.style.display = "none";
 });

@@ -4,19 +4,18 @@
  * 
  * This browser is free of use but may contain a license, check the repository for details.
 */
-
-import { utils } from "library/packman";
+import { utils, elements } from "library/packman";
 
 export var tabs = []; // Where all the tab objects are stored
-var focusedTabId;
+export var focusedTabId;
 
-const views = document.getElementById("webviews");
-const tabButtons = document.getElementById("tabs");
-const urlBox = document.getElementById("omnibox-input-text");
-const omniboxSuggestions = document.getElementById("omnibox-suggestions");
-const appbar = document.getElementById("appbar");
-const lowcatcher = document.getElementById("lowcatcher");
-const appbarHitbox = document.getElementById("appbar-insert");
+const views = elements.id("webviews");
+const tabButtons = elements.id("tabs");
+const urlBox = elements.id("omnibox-input-text");
+const omniboxSuggestions = elements.id("omnibox-suggestions");
+const appbar = elements.id("appbar");
+const lowcatcher = elements.id("lowcatcher");
+const appbarHitbox = elements.id("appbar-insert");
 
 /*
  * Creates a tab, opening a URL; namely its object and the WebView itself.
@@ -83,10 +82,10 @@ export function createTabButton(tab, favicon) {
 
     const buttonId = "favbtn-tabid-" + tabId;
     const imageId = "favimg-tabid-" + tabId;
-    const relevantButton = document.getElementById(buttonId);
+    const relevantButton = elements.id(buttonId);
 
     if (relevantButton) { // If the button already exists
-        const faviconImage = document.getElementById(imageId);
+        const faviconImage = elements.id(imageId);
         if (favicon) faviconImage.src = favicon;
         console.log("Favicon trigger: " + favicon);
         return relevantButton;
@@ -137,7 +136,7 @@ export function closeTab(tab) {
  * id: The tab ID (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
 */
 export function getTabButtonById(id) {
-    const button = document.getElementById("favbtn-tabid-" + id);
+    const button = elements.id("favbtn-tabid-" + id);
     if (button) return button;
     return null;
 }
@@ -170,7 +169,7 @@ export function registerTabListeners(tab) {
         isFaviconUpdated = false;
         clearTimeout(faviconTimeout);
         console.log("NAVIGATION STARTED");
-        createTabButton(tab, "../assets/loading2.gif"); // Does not remake button, but changes favicon
+        createTabButton(tab, "../assets/Rolling@1x-1.0s-200px-200px-thick.gif"); // Does not remake button, but changes favicon
         utils.navigationColourCheck();
 
         faviconTimeout = setTimeout(() => {
@@ -240,7 +239,7 @@ export function focusTab(tab) {
  * Loops through all tabs and hides them.
 */
 export function hideAllTabs() {
-    const views = document.getElementById("webviews");
+    const views = elements.id("webviews");
     for (const item of views.children) {
         item.style.display = "none";
     }
@@ -300,12 +299,15 @@ async function createSuggestionButtons(suggestions) {
             createTab(`https://google.com/search?q=${suggestion}`);
             urlBox.value = "";
             clearSuggestionButtons();
-            document.getElementById("genuine-omnibox").style.display = "none";
+            elements.id("genuine-omnibox").style.display = "none";
         });
         //suggestion[0]["$"].data
     }
 }
 
+/*
+ * Returns the tab that is currently active.
+*/
 export function getActiveTab() {
     const tab = getTabObjectById(focusedTabId);
     if (tab) {
@@ -329,6 +331,6 @@ urlBox.addEventListener("keydown", (e) => {
         createTab(`https://google.com/search?q=${urlBox.value.trim()}`);
         urlBox.value = "";
         clearSuggestionButtons();
-        document.getElementById("genuine-omnibox").style.display = "none";
+        elements.id("genuine-omnibox").style.display = "none";
     }
 });

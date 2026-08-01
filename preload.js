@@ -5,7 +5,8 @@ contextBridge.exposeInMainWorld("revoAPI", {
     openNewTab: (callback) => ipcRenderer.on("open-new-tab", (_event, val) => callback(val)),
     onToggleShift: (callback) => ipcRenderer.on("toggle-shift", (_event, val) => callback(val)),
     onCloseActiveTab: (callback) => ipcRenderer.on("close-active-tab", (_event) => callback()),
-    onWindowResized: (callback) => ipcRenderer.on("window-resized", (_event) => callback()), 
+    onWindowResized: (callback) => ipcRenderer.on("window-resized", (_event) => callback()),
+    onMouseClick: (callback) => ipcRenderer.on("mouse-click", (_evt, x, y) => callback(x, y))
 });
 
 contextBridge.exposeInMainWorld("revoLibrary", {
