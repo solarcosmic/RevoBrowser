@@ -50,11 +50,12 @@ export function createTab(url = "https://hackclub.com", focus = true) {
     tab.view.setAttribute("id", tabIdString); // Updates the DOM ID so we can reference it in the future
 
     tabs.push(tab); // Pushes the tab object to the tabs array
-    createTabButton(tab); // Creates a tab button that appears in the app drawer
+    tab["button"] = createTabButton(tab); // Creates a tab button that appears in the app drawer
     views.appendChild(tab.view); // Adds the WebView object to the DOM
 
     registerTabListeners(tab); // Registers all relevant events (e.g. favicon changes)
     if (focus) focusTab(tab); // Sets the newly created tab to be the one in focus
+    closeTab(tab); // testing
     return tab;
 }
 
@@ -93,6 +94,24 @@ export function createTabButton(tab, favicon) {
         focusTab(tab);
     })
     return button;
+}
+
+/*
+ * Gets a tab button by its ID.
+*/
+export function getTabButtonById(id) {
+    const tab = getTabObjectById(id);
+    if (!tab) return null;
+    return tab["button"] || document.getElementById("favbtn-tabid-" + id);
+}
+
+export function closeTab(tab) {
+    const tabIndex = tabs.findIndex(loopTab => loopTab.id == tab.id);
+    if (!tabIndex) return;
+    console.log(tabs.length);
+    if (tabIndex != 1) tabs.splice(tabIndex, 1);
+    
+    console.log(tabs);
 }
 
 /*

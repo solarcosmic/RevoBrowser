@@ -144,10 +144,10 @@ document.addEventListener("keyup", (evt) => {
     }
 });*/
 
-window.revoAPI.toggleShift((val) => {
+window.revoAPI.onToggleShift((val) => {
     if (val) {
         document.getElementById("shift-panel").style.display = "none";
     } else {
         document.getElementById("shift-panel").style.display = "block";
     }
-})
+});

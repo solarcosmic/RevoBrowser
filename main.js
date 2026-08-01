@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, session } from 'electron';
+import { app, BrowserWindow, ipcMain, session, globalShortcut } from 'electron';
 import contextMenu from 'electron-context-menu';
 import download from 'electron-dl';
 import path from 'node:path';
@@ -76,6 +76,7 @@ app.whenReady().then(() => {
   const revoPatch = electronPatch.replace(/ revobrowser\/[^\s]+/, ` Revo/${app.getVersion() || "1.0.0"}`);
   mainSession.setUserAgent(revoPatch);
   createWindow();
+  registerShortcuts();
 });
 
 /* https://stackoverflow.com/a/53637828 */
@@ -87,7 +88,16 @@ function truncateString(str, num) {
     }
 }
 
+function registerShortcuts() {
+  globalShortcut.register("CommandOrControl+T", () => {
+      win.webContents.send("open-new-tab", `https://www.google.com`);
+  });
+  globalShortcut.register("CommandOrControl+W", () => {
+      win.webContents.send("close-active-tab");
+  });
+}
+
 ipcMain.handle("xml-to-json", async (evt, string) => {
   const result = await xml2js.parseStringPromise(string);
   return JSON.stringify(result);
-})
+});
