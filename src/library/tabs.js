@@ -142,11 +142,6 @@ export function getTabButtonById(id) {
     return null;
 }
 
-window.revoAPI.onCloseActiveTab(() => {
-    const active = getActiveTab();
-    if (active) closeTab(active);
-})
-
 /*
  * Registers all events for tabs, including when to change icons, titles, etc.
  * REQUIRES: Tab object
@@ -159,12 +154,14 @@ export function registerTabListeners(tab) {
         if (focusedTabId == tab.id) utils.updateMetadata(tab); // Updates titles IF the focused tab is the tab itself
         utils.navigationColourCheck();
     });
+
     /* DOM Ready */
     tab.view.addEventListener("dom-ready", (e) => {
         tab.states.hasLoaded = true; // Set the tab state to indicate the tab has loaded
         if (focusedTabId == tab.id) utils.updateMetadata(tab); // Updates titles IF the focused tab is the tab itself
         utils.navigationColourCheck();
     });
+
     tab.view.addEventListener("did-start-navigation", (e) => {
         if (!e.isMainFrame || e.isInPlace) return; // prevents IFrames from triggering this event & ignores #hashes
         isFaviconUpdated = false;
@@ -182,6 +179,7 @@ export function registerTabListeners(tab) {
             }
         }, 10000);
     });
+
     /* Navigation Started */
     tab.view.addEventListener("did-start-loading", (e) => {
         if (!tab.view) return;
@@ -191,6 +189,7 @@ export function registerTabListeners(tab) {
         utils.navigationColourCheck();
         // If the favicon has already updated, continue no further
     });
+
     /* Page Finished Loading */
     tab.view.addEventListener("did-finish-load", (e) => {
         if (!isFaviconUpdated && !tab.view.isLoading()) {
@@ -203,12 +202,15 @@ export function registerTabListeners(tab) {
             utils.navigationColourCheck();
         }
     });
+
     tab.view.addEventListener("did-fail-load", (e) => {
         console.log("Uh oh! Tab failed to load");
     });
+
     tab.view.addEventListener("render-process-gone", (evt, details) => {
         console.log(`Render process gone! Reason: ${details.reason} with exit code ${details.exitCode}`);
     })
+
     /* Page Favicon Updated */
     tab.view.addEventListener("page-favicon-updated", (e) => {
         //if (isFaviconUpdated) return; // If the favicon has already updated, continue no further
@@ -293,7 +295,7 @@ async function createSuggestionButtons(suggestions) {
     for (const item of suggestions.slice(0, 5)) { // Loop through result, slice to get only first 5 entries
         const suggestion = item.suggestion[0]["$"].data;
         const omniboxItem = utils.createElementWithClass("div", "omnibox-item");
-        omniboxItem.textContent = suggestion;
+        omniboxItem.textContent = utils.truncateString(suggestion, 52);
         omniboxSuggestions.appendChild(omniboxItem);
 
         omniboxItem.addEventListener("click", () => {
@@ -318,6 +320,9 @@ export function getActiveTab() {
     }
 }
 
+/*
+ * Saves tabs to Electron Store, allowing the tabs to be retrieved upon next start.
+*/
 export async function saveTabs() {
     var queuedTabs = [];
     for (const tab of tabs) {
@@ -329,22 +334,27 @@ export async function saveTabs() {
         queuedTabs.push(cachedObject);
     }
     await window.revoStore.set("saved_tabs", queuedTabs);
-    //localStorage.setItem("revo:saved_tabs", JSON.stringify(queuedTabs));
 };
 
+/*
+ * Loads tabs from Electron Store and creates them.
+*/
 export async function loadSavedTabs() {
     const queuedTabs = await window.revoStore.get("saved_tabs");
     if (!queuedTabs) return;
     console.log(queuedTabs);
 
-    //const queuedTabs = JSON.parse(queuedTabs);
     if (queuedTabs.length < 1) {
-        createTab("https://google.com");
+        createTab("https://solarcosmic.net/revobrowser/landing/");
         return;
     }
     for (const item of queuedTabs) {
         createTab(item.url, item.focus, item.id);
     }
+    // Final checks to make sure only one tab is in focus
+    const focusedTab = queuedTabs.find(item => item.focus);
+    const actualTab = getTabObjectById(focusedTab.id);
+    if (actualTab) focusTab(actualTab);
 }
 
 var typeTime;
@@ -368,3 +378,11 @@ urlBox.addEventListener("keydown", (e) => {
         elements.id("genuine-omnibox").style.display = "none";
     }
 });
+
+/*
+ * Recieves from IPC: Finds the active tab and closes it.
+*/
+window.revoAPI.onCloseActiveTab(() => {
+    const active = getActiveTab();
+    if (active) closeTab(active);
+})

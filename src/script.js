@@ -7,14 +7,14 @@
 import { utils, tabs, elements } from "library/packman";
 
 // Variables
-const lowcatcher = document.getElementById("lowcatcher");
-const catcher = document.getElementById("catcher");
-const navcatcher = document.getElementById("nav-area");
-const shiftPanel = document.getElementById("shift-panel");
+const lowcatcher = elements.id("lowcatcher");
+const catcher = elements.id("catcher");
+const navcatcher = elements.id("nav-area");
+const shiftPanel = elements.id("shift-panel");
 
-const topbar = document.getElementById("topbar");
-const appbar = document.getElementById("appbar");
-const navigations = document.getElementById("navigations");
+const topbar = elements.id("topbar");
+const appbar = elements.id("appbar");
+const navigations = elements.id("navigations");
 
 var focusedTabId = 1;
 var tabInc = 0;
@@ -61,7 +61,7 @@ navcatcher.addEventListener("mouseleave", (event) => {
     navigations.style.display = "none";
 });
 
-document.getElementById("new-tab-button").addEventListener("click", () => {
+elements.id("new-tab-button").addEventListener("click", () => {
     const tab = tabs.createTab("https://google.com");
     requestAnimationFrame(() => { // Adds delay to make sure the tab has been made before focusing it
         tabs.focusTab(tab);
@@ -77,38 +77,38 @@ function truncateString(str, num) {
     }
 };
 
-document.getElementById("topbar").addEventListener("click", () => {
-    document.getElementById("url-text").focus();
+elements.id("topbar").addEventListener("click", () => {
+    elements.id("url-text").focus();
 });
 
 catcher.addEventListener("click", (evt) => {
     evt.stopPropagation();
-    document.getElementById("genuine-omnibox").style.display = "block";
+    elements.id("genuine-omnibox").style.display = "block";
 });
 
 document.addEventListener("click", (evt) => {
-    const isClickInside = document.getElementById("genuine-omnibox").contains(evt.target);
+    const isClickInside = elements.id("genuine-omnibox").contains(evt.target);
     if (!isClickInside) {
-        document.getElementById("genuine-omnibox").style.display = "none";
+        elements.id("genuine-omnibox").style.display = "none";
     }
 });
 
 // Back, Forward, and Refresh Navigation
-document.getElementById("nav-back").addEventListener("click", () => {
+elements.id("nav-back").addEventListener("click", () => {
     const focusedTab = tabs.getActiveTab();
     if (!focusedTab?.view) return; // If the WebView doesn't exist, don't continue
 
     if (focusedTab.view.canGoBack()) focusedTab.view.goBack();
 });
 
-document.getElementById("nav-forward").addEventListener("click", () => {
+elements.id("nav-forward").addEventListener("click", () => {
     const focusedTab = tabs.getActiveTab();
     if (!focusedTab?.view) return; // If the WebView doesn't exist, don't continue
 
     if (focusedTab.view.canGoForward()) focusedTab.view.goForward();
 });
 
-document.getElementById("nav-refresh").addEventListener("click", () => {
+elements.id("nav-refresh").addEventListener("click", () => {
     const focusedTab = tabs.getActiveTab();
     if (!focusedTab?.view) return; // If the WebView doesn't exist, don't continue
 
