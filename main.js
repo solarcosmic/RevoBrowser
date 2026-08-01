@@ -133,6 +133,7 @@ ipcMain.handle("revo-store-get", (evt, key) => {
 
 ipcMain.handle("revo-store-set", (evt, key, val) => {
   store.set(key, val);
+  store.delete(key);
 });
 
 ipcMain.handle("revo-store-delete", (evt, key) => {

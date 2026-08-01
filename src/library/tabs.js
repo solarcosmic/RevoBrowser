@@ -341,7 +341,10 @@ export async function saveTabs() {
 */
 export async function loadSavedTabs() {
     const queuedTabs = await window.revoStore.get("saved_tabs");
-    if (!queuedTabs) return;
+    if (!queuedTabs) {
+        createTab("https://solarcosmic.net/revobrowser/landing/");
+        return;
+    };
     console.log(queuedTabs);
 
     if (queuedTabs.length < 1) {

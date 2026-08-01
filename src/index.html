@@ -26,11 +26,11 @@
         #container {
             /* From https://css.glass */
             background: rgba(255, 255, 255, 0.2);
-            border-radius: 16px;
+            /*border-radius: 16px;*/
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(15.8px);
             -webkit-backdrop-filter: blur(15.8px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            /*border: 1px solid rgba(255, 255, 255, 0.3);*/
             width: 100%;
             height: 100%;
             box-sizing: border-box;
@@ -39,7 +39,7 @@
             display: flex;
             justify-content: flex-end;
             height: 100vh;
-            border-radius: 16px;
+            /*border-radius: 16px;*/
             overflow: hidden;
         }
         #webviews webview {
@@ -226,12 +226,11 @@
             background-color: #24242454;
         }
         [id*="nav-"] {
-            background-color: #24242454;
-            color: #ffffff;
+            /*filter: brightness(0) saturate(100%) invert(42%) sepia(18%) saturate(0%) hue-rotate(156deg) brightness(111%) contrast(103%);*/
             border: none;
         }
         .svg-white {
-            filter: brightness(0) invert(1);
+            filter: brightness(0) invert(1) !important;
         }
         #navigations {
             position: absolute;
@@ -240,6 +239,9 @@
             width: 128px;
             height: 32px;
             background-color: #0000007e;
+            -webkit-border-bottom-right-radius: 4px;
+            -moz-border-radius-bottomright: 4px;
+            border-bottom-right-radius: 4px;
             user-select: none;
             z-index: 999;
         }
