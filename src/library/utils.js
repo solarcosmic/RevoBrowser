@@ -66,3 +66,17 @@ export function renderCatcherWidth() {
 
     lowcatcher.style.width = `${width}px`; // Set the appbar hitbox's width to the width of the appbar
 }
+
+/*
+ * A simple helper function to detect if a given string is a valid URL.
+ * Initial source: https://www.turing.com/kb/how-to-validate-urls-in-javascript
+ * 
+ * url: The URL as a string
+*/
+export function isValidURL(url) {
+    try {
+        return Boolean(new URL(url));
+    } catch (e) {
+        return false;
+    }
+};

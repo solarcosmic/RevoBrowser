@@ -70,16 +70,22 @@ export function createTab(url = "https://google.com", focus = true) {
 /*
  * Creates a tab button in the App Drawer.
  * Also serves as a function that updates the favicon of an existing tab button via tab object.
+ * 
+ * tab: Tab object (see createTab for more details)
+ * favicon: If provided, the existing button will update its favicon
 */
 export function createTabButton(tab, favicon) {
     const tabId = tab.id;
-    if (!tabId) { throw Error("No tab ID found!"); return; }
+    if (!tabId) {
+        throw Error("No tab ID found!");
+        return;
+    }
 
     const buttonId = "favbtn-tabid-" + tabId;
     const imageId = "favimg-tabid-" + tabId;
     const relevantButton = document.getElementById(buttonId);
 
-    if (relevantButton) {
+    if (relevantButton) { // If the button already exists
         const faviconImage = document.getElementById(imageId);
         if (favicon) faviconImage.src = favicon;
         console.log("Favicon trigger: " + favicon);
@@ -104,6 +110,11 @@ export function createTabButton(tab, favicon) {
     return button;
 }
 
+/*
+ * Closes a tab and cleans it up (e.g. removes button, its tab object)
+ * 
+ * tab: Tab object (see createTab for more details)
+*/
 export function closeTab(tab) {
     if (tabs.length <= 1) return;
     const index = tabs.indexOf(tab);
@@ -113,19 +124,18 @@ export function closeTab(tab) {
     if (tab.view) tab.view.remove();
     tabs.splice(index, 1);
 
-    if (focusedTabId == tab.id) {
+    if (focusedTabId == tab.id) { // If the currently focused tab is the tab closed
         const tabNext = tabs[index] || tabs[index-1] || null;
-        if (tabNext) {
-            focusTab(tabNext);
-        } else {
-            // todo: add stop code
-            focusedTabId = null;
-            hideAllTabs();
-        }
+        if (tabNext) focusTab(tabNext);
     }
     utils.renderCatcherWidth();
 }
 
+/*
+ * Gets a tab's button by its ID.
+ *
+ * id: The tab ID (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
+*/
 export function getTabButtonById(id) {
     const button = document.getElementById("favbtn-tabid-" + id);
     if (button) return button;
@@ -136,24 +146,6 @@ window.revoAPI.onCloseActiveTab(() => {
     const active = getActiveTab();
     if (active) closeTab(active);
 })
-
-/*
- * Gets a tab button by its ID.
-*/
-/*export function getTabButtonById(id) {
-    const tab = getTabObjectById(id);
-    if (!tab) return null;
-    return tab["button"] || document.getElementById("favbtn-tabid-" + id);
-}
-
-export function closeTab(tab) {
-    const tabIndex = tabs.findIndex(loopTab => loopTab.id == tab.id);
-    if (!tabIndex) return;
-    console.log(tabs.length);
-    if (tabIndex != 1) tabs.splice(tabIndex, 1);
-    
-    console.log(tabs);
-}*/
 
 /*
  * Registers all events for tabs, including when to change icons, titles, etc.
@@ -265,35 +257,33 @@ export function getTabObjectById(tabId) {
 }
 
 export async function suggestSearch() {
-    if (urlBox.value.trim() == "") {
+    if (urlBox.value.trim() == "") {  // Avoids nothing and whitespace from continuing further
         clearSuggestionButtons();
         return;
-    }; // Avoids nothing and whitespace from continuing further
+    };
 
     await fetch("https://google.com/complete/search?output=toolbar&q=" + urlBox.value).then(res => {
         if (!res.ok) throw new Error("Suggestion error: " + res.status);
         return res.text();
     }).then(data => {
-        console.log(data);
         handleSearchXml(data);
-/*.then(json => {
-            console.log(json);
-        }).catch(err => {
-            console.error("uh oh!");
-        })*/
     })
 }
 
+/*
+ * A simple helper function to help with converting Google Suggestions API's XML into a JS object.
+*/
 async function handleSearchXml(data) {
     const thing = await window.revoLibrary.parseXml(data);
     const parsed = JSON.parse(thing);
-    console.log(parsed);
     const suggestions = parsed.toplevel.CompleteSuggestion;
     if (!suggestions) return;
-    console.log(suggestions);
     createSuggestionButtons(suggestions);
 }
 
+/*
+ * A simple helper function to clear the suggestion buttons on the omnibox.
+*/
 async function clearSuggestionButtons() {
     omniboxSuggestions.innerHTML = "";
 }
