@@ -241,6 +241,16 @@
             user-select: none;
             z-index: 999;
         }
+        .divider {
+            border-left: 1px solid #303030;
+            height: 50px;
+            margin: 6px 4px;
+        }
+        #tabs {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 4px;
+        }
     </style>
 </head>
 <body>
@@ -269,6 +279,7 @@
                         <button id="new-tab-button">
                             <img id="newtab-img" src="../assets/plus-solid-full.svg" style="width: 32px; height: 32px;">
                         </button>
+                        <div class="divider"></div>
                     </div>
                 </div>
             </div>
