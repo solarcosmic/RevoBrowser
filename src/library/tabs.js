@@ -23,6 +23,7 @@ const appbarHitbox = elements.id("appbar-insert");
  * 
  * url: The URL to automatically go to when the tab is created (default: "https://google.com")
  * focus: Whether the tab should automatically be in focus (default: true)
+ * forceId: Whether you want a UUID to be automatically applied instead of randomly generated
  * 
  * Tab objects contain the following:
  * - id: Random UUID (e.g. 48316277-2f3b-48c0-bc66-3d758f895c1c)
@@ -33,14 +34,14 @@ const appbarHitbox = elements.id("appbar-insert");
  *   - pinned: Set to true when the tab is pinned (default: false),
  *   - faviconLoaded: Set to true when the page has loaded enough for a favicon to load (default: false)
 */
-export function createTab(url = "https://google.com", focus = true) {
+export function createTab(url = "https://google.com", focus = true, forceId) {
     if (tabs.length >= 10) return; // Maximum of 10 tabs only
 
     const tabId = crypto.randomUUID(); // Random UUID (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
     const tabIdString = "tab_" + tabId; // Used in the DOM (tab_xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
 
     const tab = {
-        id: tabId,
+        id: forceId || tabId,
         view: document.createElement("webview"),
         states: {
             isLoading: false,
@@ -314,6 +315,33 @@ export function getActiveTab() {
         return tab;
     } else {
         return null;
+    }
+}
+
+export function saveTabs() {
+    var queuedTabs = [];
+    for (const tab of tabs) {
+        const cachedObject = {
+            id: tab.id || crypto.randomUUID(),
+            url: tab.view?.getURL() || "https://google.com",
+            focus: (tab.id == focusedTabId)
+        }
+        queuedTabs.push(cachedObject);
+    }
+    localStorage.setItem("revo:saved_tabs", JSON.stringify(queuedTabs));
+};
+
+export function loadSavedTabs() {
+    const storedString = localStorage.getItem("revo:saved_tabs");
+    if (!storedString) return;
+
+    const queuedTabs = JSON.parse(storedString);
+    if (queuedTabs.length < 1) {
+        tabs.createTab("https://google.com");
+        return;
+    }
+    for (const item of queuedTabs) {
+        createTab(item.url, item.focus, item.id);
     }
 }
 

@@ -1,14 +1,17 @@
-import { app, BrowserWindow, ipcMain, session, globalShortcut } from 'electron';
+import { app, BrowserWindow, ipcMain, session, globalShortcut, dialog } from 'electron';
 import contextMenu from 'electron-context-menu';
 import download from 'electron-dl';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import xml2js from 'xml2js';
+import Store from 'electron-store';
 
+/* Constants */
 // prefaces for es6
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+const store = new Store();
 
 var win;
 
@@ -88,6 +91,13 @@ app.whenReady().then(() => {
   mainSession.setUserAgent(revoPatch);
   createWindow();
   registerShortcuts();
+  dialog.showMessageBox(win, {
+    type: "warning",
+    message: "Incorrect Shutdown",
+    title: "Revo - Error",
+    buttons: ["Yes", "No"],
+    detail: "It seems that Revo may have shut down incorrectly, and tab data may not have been accurately saved.\n\nWould you like Revo to attempt to load the latest record? If no record is present, Revo will create a single tab by default."
+  })
 });
 
 /* https://stackoverflow.com/a/53637828 */

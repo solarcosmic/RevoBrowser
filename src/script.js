@@ -61,8 +61,6 @@ navcatcher.addEventListener("mouseleave", (event) => {
     navigations.style.display = "none";
 });
 
-tabs.createTab("https://google.com");
-
 document.getElementById("new-tab-button").addEventListener("click", () => {
     const tab = tabs.createTab("https://google.com");
     requestAnimationFrame(() => { // Adds delay to make sure the tab has been made before focusing it
@@ -132,11 +130,6 @@ window.revoAPI.onWindowResized(() => {
     utils.renderCatcherWidth();
 });
 
-document.body.addEventListener("click", () => {
-    console.log("yes");
-    console.log(event.target.outerHTML);
-})
-
 window.revoAPI.onMouseClick((x, y) => {
     const omnibox = elements.id("genuine-omnibox");
     const element = document.elementFromPoint(x, y);
@@ -151,3 +144,13 @@ window.revoAPI.onMouseClick((x, y) => {
     // If the omnibox is visible, set its display to none
     if (omnibox.style.display == "block") omnibox.style.display = "none";
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    tabs.loadSavedTabs();
+    localStorage.setItem("revo:clean_exit", false);
+});
+
+window.addEventListener("beforeunload", () => {
+    tabs.saveTabs();
+    localStorage.setItem("revo:clean_exit", true);
+})
