@@ -19,7 +19,7 @@ const omniboxSuggestions = document.getElementById("omnibox-suggestions");
  * Creates a tab, opening a URL; namely its object and the WebView itself.
  * Includes a tab button via createTabButton().
  * 
- * url: The URL to automatically go to when the tab is created (default: "https://hackclub.com")
+ * url: The URL to automatically go to when the tab is created (default: "https://google.com")
  * focus: Whether the tab should automatically be in focus (default: true)
  * 
  * Tab objects contain the following:
@@ -31,7 +31,9 @@ const omniboxSuggestions = document.getElementById("omnibox-suggestions");
  *   - pinned: Set to true when the tab is pinned (default: false),
  *   - faviconLoaded: Set to true when the page has loaded enough for a favicon to load (default: false)
 */
-export function createTab(url = "https://hackclub.com", focus = true) {
+export function createTab(url = "https://google.com", focus = true) {
+    if (tabs.length >= 10) return; // Maximum of 10 tabs only
+
     const tabId = crypto.randomUUID(); // Random UUID (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
     const tabIdString = "tab_" + tabId; // Used in the DOM (tab_xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
 
@@ -55,7 +57,6 @@ export function createTab(url = "https://hackclub.com", focus = true) {
 
     registerTabListeners(tab); // Registers all relevant events (e.g. favicon changes)
     if (focus) focusTab(tab); // Sets the newly created tab to be the one in focus
-    closeTab(tab); // testing
     return tab;
 }
 
@@ -96,10 +97,42 @@ export function createTabButton(tab, favicon) {
     return button;
 }
 
+export function closeTab(tab) {
+    if (tabs.length <= 1) return;
+    const index = tabs.indexOf(tab);
+    const button = getTabButtonById(tab.id);
+    if (button) button.remove();
+
+    if (tab.view) tab.view.remove();
+    tabs.splice(index, 1);
+
+    if (focusedTabId == tab.id) {
+        const tabNext = tabs[index] || tabs[index-1] || null;
+        if (tabNext) {
+            focusTab(tabNext);
+        } else {
+            // todo: add stop code
+            focusedTabId = null;
+            hideAllTabs();
+        }
+    }
+}
+
+export function getTabButtonById(id) {
+    const button = document.getElementById("favbtn-tabid-" + id);
+    if (button) return button;
+    return null;
+}
+
+window.revoAPI.onCloseActiveTab(() => {
+    const active = getActiveTab();
+    if (active) closeTab(active);
+})
+
 /*
  * Gets a tab button by its ID.
 */
-export function getTabButtonById(id) {
+/*export function getTabButtonById(id) {
     const tab = getTabObjectById(id);
     if (!tab) return null;
     return tab["button"] || document.getElementById("favbtn-tabid-" + id);
@@ -112,7 +145,7 @@ export function closeTab(tab) {
     if (tabIndex != 1) tabs.splice(tabIndex, 1);
     
     console.log(tabs);
-}
+}*/
 
 /*
  * Registers all events for tabs, including when to change icons, titles, etc.
