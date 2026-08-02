@@ -29,7 +29,7 @@ const createWindow = () => {
 
   win.setMenu(null);
   win.loadFile('src/index.html');
-  win.webContents.openDevTools();
+  //win.webContents.openDevTools();
 
   win.on("resized", () => {
     win.webContents.send("window-resized");
@@ -133,7 +133,6 @@ ipcMain.handle("revo-store-get", (evt, key) => {
 
 ipcMain.handle("revo-store-set", (evt, key, val) => {
   store.set(key, val);
-  store.delete(key);
 });
 
 ipcMain.handle("revo-store-delete", (evt, key) => {

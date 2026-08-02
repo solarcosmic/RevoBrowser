@@ -104,6 +104,7 @@ export function createTabButton(tab, favicon) {
     button.setAttribute("id", buttonId);
     tabButtons.appendChild(button);
 
+    // Implement the close tab button
     const closeTabButton = document.createElement("close-tab-button");
     closeTabButton.classList.add("close-tab-button");
     button.appendChild(closeTabButton);
@@ -113,17 +114,17 @@ export function createTabButton(tab, favicon) {
     button.addEventListener("click", () => {
         focusTab(tab);
     });
+
+    // Detect when the mouse is hovered and closed
     button.addEventListener("mouseenter", () => {
-        console.log("enter mouse");
-        closeTabButton.style.display = "block";
+        if (tabs.length > 1) closeTabButton.style.display = "block";
     });
     button.addEventListener("mouseleave", () => {
-        console.log("mouse leave");
         closeTabButton.style.display = "none";
     });
     closeTabButton.addEventListener("click", (evt) => {
-        evt.stopPropagation();
-        closeTab(tab);
+        evt.stopPropagation(); // To stop any other tab button click issues
+        closeTab(tab); // Closes the tab corresponding to the button
     });
     return button;
 }
@@ -253,6 +254,11 @@ export function focusTab(tab) {
     hideAllTabs();
     if (tab.states.hasLoaded) utils.updateMetadata(tab);
     utils.navigationColourCheck(tab);
+    for (const item of tabButtons.children) {
+        item.setAttribute("isinfocus", "false");
+    };
+    const button = getTabButtonById(tab.id);
+    button.setAttribute("isinfocus", "true");
     tab.view.style.display = "flex";
 }
 

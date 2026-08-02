@@ -17,7 +17,7 @@ export function id(element) {
 /*
  * A simple helper function to get the first element by its class.
  *
- * element: The element ID
+ * element: The element class
 */
 export function byClass(element) {
     return document.getElementsByClassName(element)[0];
