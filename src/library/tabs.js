@@ -104,9 +104,27 @@ export function createTabButton(tab, favicon) {
     button.setAttribute("id", buttonId);
     tabButtons.appendChild(button);
 
+    const closeTabButton = document.createElement("close-tab-button");
+    closeTabButton.classList.add("close-tab-button");
+    button.appendChild(closeTabButton);
+    closeTabButton.textContent = "x";
+
+    closeTabButton.style.display = "none";
     button.addEventListener("click", () => {
         focusTab(tab);
-    })
+    });
+    button.addEventListener("mouseenter", () => {
+        console.log("enter mouse");
+        closeTabButton.style.display = "block";
+    });
+    button.addEventListener("mouseleave", () => {
+        console.log("mouse leave");
+        closeTabButton.style.display = "none";
+    });
+    closeTabButton.addEventListener("click", (evt) => {
+        evt.stopPropagation();
+        closeTab(tab);
+    });
     return button;
 }
 

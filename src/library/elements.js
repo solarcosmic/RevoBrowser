@@ -13,3 +13,12 @@
 export function id(element) {
     return document.getElementById(element);
 }
+
+/*
+ * A simple helper function to get the first element by its class.
+ *
+ * element: The element ID
+*/
+export function byClass(element) {
+    return document.getElementsByClassName(element)[0];
+}

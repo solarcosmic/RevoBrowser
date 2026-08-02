@@ -154,6 +154,7 @@
 
         #new-tab-button {
             margin-top: auto;
+            position: relative;
         }
 
         #newtab-img {
@@ -255,6 +256,20 @@
             flex-wrap: nowrap;
             gap: 4px;
         }
+        .close-tab-button {
+            position: absolute;
+            background-color: #ad00007d;
+            color: #ffffff;
+            width: 16px;
+            height: 16px;
+            top: 0px;
+            right: 0px;
+            border-top-right-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+        #tabs button {
+            position: relative;
+        }
     </style>
 </head>
 <body>
@@ -283,6 +298,7 @@
                         <button id="new-tab-button">
                             <img id="newtab-img" src="../assets/plus-solid-full.svg" style="width: 32px; height: 32px;">
                         </button>
+
                         <div class="divider"></div>
                     </div>
                 </div>
