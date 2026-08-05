@@ -11,5 +11,19 @@ All the basic things!
 - Omnibox (search & URLs)
 - and of course, tab creation and destruction!
 
+## How can I install Revo?
+Simply head over to the [Releases](https://github.com/solarcosmic/RevoBrowser/releases/tag/1.0.0) tab and download the Windows exe and run it to set it up.
+
+## How can I build Revo from scratch?
+*(These steps assume that you have Git and NodeJS pre-installed)*
+Run these commands in a terminal:
+```bash
+git clone https://github.com/solarcosmic/RevoBrowser.git
+cd RevoBrowser
+npm i
+npm run app:dist
+```
+You will then find the built executable (.exe) in the /dist folder.
+
 ## How does Revo work?
 Revo uses Electron, an app-building framework, which runs Chromium. Revo then uses Electron's `WebView` element to draw new tabs.
